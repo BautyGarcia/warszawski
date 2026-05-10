@@ -20,11 +20,11 @@ export const getContactInfo = cache(async (): Promise<ContactInfo> => {
   const content = await getContentMap("contact");
   return {
     whatsappNumber:
-      content["contact.whatsapp_number"] ||
+      content["contact.whatsapp.number"] ||
       process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
       "",
-    instagramUrl: content["contact.instagram_url"] ?? "",
-    facebookUrl: content["contact.facebook_url"] ?? "",
-    tiktokUrl: content["contact.tiktok_url"] ?? "",
+    instagramUrl: content["contact.social.instagram"] ?? "",
+    facebookUrl: content["contact.social.facebook"] ?? "",
+    tiktokUrl: content["contact.social.tiktok"] ?? "",
   };
 });

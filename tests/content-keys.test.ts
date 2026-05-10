@@ -7,9 +7,9 @@ describe("SITE_CONTENT_FIELDS", () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it("covers home and about", () => {
+  it("covers home, about and contact", () => {
     const pages = new Set(SITE_CONTENT_FIELDS.map((f) => f.page));
-    expect(pages).toEqual(new Set(["home", "about"]));
+    expect(pages).toEqual(new Set(["home", "about", "contact"]));
   });
 
   it("every field has a non-empty label", () => {
@@ -18,8 +18,9 @@ describe("SITE_CONTENT_FIELDS", () => {
     );
   });
 
-  it("every field has a non-empty default value", () => {
-    SITE_CONTENT_FIELDS.forEach((f) =>
+  it("editorial copy fields (home/about) have non-empty defaults", () => {
+    // Contact fields tienen default vacío a proposito (handler de empty state).
+    SITE_CONTENT_FIELDS.filter((f) => f.page !== "contact").forEach((f) =>
       expect(f.defaultValue.length, `key ${f.key}`).toBeGreaterThan(0),
     );
   });

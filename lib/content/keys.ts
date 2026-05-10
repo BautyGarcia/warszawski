@@ -254,7 +254,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
 
   // ── CONTACT / whatsapp ───────────────────────────────────
   {
-    key: "contact.whatsapp_number",
+    key: "contact.whatsapp.number",
     page: "contact",
     section: "whatsapp",
     label: "Numero de WhatsApp",
@@ -264,7 +264,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
 
   // ── CONTACT / social ─────────────────────────────────────
   {
-    key: "contact.instagram_url",
+    key: "contact.social.instagram",
     page: "contact",
     section: "social",
     label: "URL de Instagram",
@@ -272,7 +272,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     defaultValue: "",
   },
   {
-    key: "contact.facebook_url",
+    key: "contact.social.facebook",
     page: "contact",
     section: "social",
     label: "URL de Facebook",
@@ -280,7 +280,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     defaultValue: "",
   },
   {
-    key: "contact.tiktok_url",
+    key: "contact.social.tiktok",
     page: "contact",
     section: "social",
     label: "URL de TikTok",
