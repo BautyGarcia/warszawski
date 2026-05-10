@@ -19,7 +19,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
   return (
     <section className="flex w-full flex-col gap-8 bg-bg px-6 pt-6 md:gap-12 md:px-12 lg:flex-row lg:items-start lg:gap-12 lg:px-20">
       <div className="flex w-full flex-col gap-3 md:gap-4 lg:flex-1">
-        <div className="relative flex aspect-square w-full max-w-[640px] items-center justify-center overflow-hidden rounded-sm bg-bg-warm">
+        <div className="relative flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-sm bg-bg-warm">
           {active ? (
             <Image
               key={active.url}
@@ -49,7 +49,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
                   aria-label={`Imagen ${i + 1}`}
                   aria-pressed={isActive}
                   className={cn(
-                    "relative aspect-square w-24 shrink-0 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors md:w-28",
+                    "relative aspect-[3/2] w-28 shrink-0 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors md:w-32",
                     isActive ? "border-gold" : "border-transparent hover:border-line",
                   )}
                 >
@@ -57,7 +57,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
                     src={img.url}
                     alt={img.alt || `${product.name} — imagen ${i + 1}`}
                     fill
-                    sizes="96px"
+                    sizes="128px"
                     className="object-cover"
                   />
                 </button>
