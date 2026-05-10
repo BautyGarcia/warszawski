@@ -18,15 +18,15 @@ export function ProductGallery({ product, infoSlot }: Props) {
 
   return (
     <section className="flex w-full flex-col gap-8 bg-bg px-6 pt-6 md:gap-12 md:px-12 lg:flex-row lg:items-start lg:gap-12 lg:px-20">
-      <div className="flex w-full flex-col items-center gap-3 md:gap-4 lg:flex-1 lg:items-start">
-        <div className="relative flex aspect-square w-full max-w-[520px] items-center justify-center overflow-hidden rounded-sm bg-bg-warm">
+      <div className="flex w-full flex-col gap-3 md:gap-4 lg:flex-1">
+        <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-sm bg-bg-warm">
           {active ? (
             <Image
               key={active.url}
               src={active.url}
               alt={active.alt || product.name}
               fill
-              sizes="(min-width: 1024px) 520px, (min-width: 768px) 520px, 100vw"
+              sizes="(min-width: 1024px) 60vw, 100vw"
               className="object-cover"
               priority
               unoptimized
@@ -39,7 +39,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
         </div>
 
         {thumbs.length > 1 ? (
-          <div className="flex w-full max-w-[520px] gap-3 md:gap-4">
+          <div className="flex gap-3 md:gap-4">
             {thumbs.map((img, i) => {
               const isActive = i === activeIndex;
               return (
@@ -50,7 +50,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
                   aria-label={`Imagen ${i + 1}`}
                   aria-pressed={isActive}
                   className={cn(
-                    "relative aspect-square flex-1 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors",
+                    "relative aspect-square w-20 shrink-0 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors md:w-24",
                     isActive ? "border-gold" : "border-transparent hover:border-line",
                   )}
                 >
@@ -58,7 +58,7 @@ export function ProductGallery({ product, infoSlot }: Props) {
                     src={img.url}
                     alt={img.alt || `${product.name} — imagen ${i + 1}`}
                     fill
-                    sizes="120px"
+                    sizes="96px"
                     className="object-cover"
                     unoptimized
                   />

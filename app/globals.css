@@ -39,6 +39,12 @@ html {
   scroll-padding-top: 6rem;
 }
 
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href] {
+  cursor: pointer;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(16px);
