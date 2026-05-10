@@ -17,6 +17,8 @@ const SECTION_LABELS: Record<string, string> = {
   cta: "CTA Final",
   origin: "Historia de Origen",
   values: "Valores",
+  whatsapp: "WhatsApp",
+  social: "Redes sociales",
 };
 
 function groupBySection(fields: ContentFieldDef[]) {
@@ -30,6 +32,7 @@ function groupBySection(fields: ContentFieldDef[]) {
 
 const HOME_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "home");
 const ABOUT_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "about");
+const CONTACT_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "contact");
 
 type Props = {
   initialValues: Record<string, string>;
@@ -112,6 +115,12 @@ export function ContentTabs({ initialValues }: Props) {
           >
             Nosotros
           </TabsTrigger>
+          <TabsTrigger
+            value="contact"
+            className="rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 text-sm text-[#6B6B6B] data-[state=active]:border-ink data-[state=active]:bg-transparent data-[state=active]:text-ink data-[state=active]:shadow-none"
+          >
+            Contacto
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="home" className="flex max-w-[720px] flex-col gap-10">
@@ -128,6 +137,22 @@ export function ContentTabs({ initialValues }: Props) {
 
         <TabsContent value="about" className="flex max-w-[720px] flex-col gap-10">
           {groupBySection(ABOUT_FIELDS).map(([section, fields]) => (
+            <ContentSection
+              key={section}
+              title={SECTION_LABELS[section] ?? section}
+              fields={fields}
+              values={values}
+              onChange={setValue}
+            />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="contact" className="flex max-w-[720px] flex-col gap-10">
+          <p className="-mb-4 max-w-[560px] text-[13px] text-[#6B6B6B]">
+            Si dejás un campo vacío, esa red social no se muestra en el sitio público.
+            El WhatsApp es el único requerido para que funcionen los CTAs.
+          </p>
+          {groupBySection(CONTACT_FIELDS).map(([section, fields]) => (
             <ContentSection
               key={section}
               title={SECTION_LABELS[section] ?? section}

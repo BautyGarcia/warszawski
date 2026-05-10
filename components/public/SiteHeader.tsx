@@ -6,7 +6,7 @@ import { WhatsAppButton } from "./WhatsAppButton";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -44,9 +44,11 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <WhatsAppButton number={SITE_CONFIG.whatsappNumber} size="sm">
-            WhatsApp
-          </WhatsAppButton>
+          {whatsappNumber ? (
+            <WhatsAppButton number={whatsappNumber} size="sm">
+              WhatsApp
+            </WhatsAppButton>
+          ) : null}
         </nav>
 
         <button
@@ -91,13 +93,11 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <WhatsAppButton
-            number={SITE_CONFIG.whatsappNumber}
-            size="sm"
-            className="mt-2 w-fit"
-          >
-            WhatsApp
-          </WhatsAppButton>
+          {whatsappNumber ? (
+            <WhatsAppButton number={whatsappNumber} size="sm" className="mt-2 w-fit">
+              WhatsApp
+            </WhatsAppButton>
+          ) : null}
         </nav>
       ) : null}
     </header>

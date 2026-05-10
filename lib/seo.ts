@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { Product } from "@/types/product";
-import { SITE_CONFIG } from "@/lib/site-config";
+import type { ContactInfo } from "@/lib/content/contact";
 
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://warszawski.com"
@@ -65,21 +65,33 @@ export function buildProductMetadata(p: Product): Metadata {
 
 // ── JSON-LD builders ─────────────────────────────────────────────────────────
 
-export function organizationJsonLd() {
+export function organizationJsonLd(contact?: ContactInfo) {
+  const sameAs = [
+    contact?.instagramUrl,
+    contact?.facebookUrl,
+    contact?.tiktokUrl,
+  ].filter((u): u is string => !!u);
+
+  const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
+
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Warszawski",
     url: SITE_URL,
     description: BRAND_DESCRIPTION,
-    sameAs: [SITE_CONFIG.instagramUrl].filter(Boolean),
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "sales",
-      areaServed: "AR",
-      availableLanguage: ["Spanish"],
-      url: `https://wa.me/${SITE_CONFIG.whatsappNumber.replace(/\D/g, "")}`,
-    },
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+    ...(whatsappDigits
+      ? {
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "sales",
+            areaServed: "AR",
+            availableLanguage: ["Spanish"],
+            url: `https://wa.me/${whatsappDigits}`,
+          },
+        }
+      : {}),
   };
 }
 

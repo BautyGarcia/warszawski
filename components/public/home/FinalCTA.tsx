@@ -1,17 +1,19 @@
 import { Reveal } from "@/components/public/Reveal";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { getContactInfo } from "@/lib/content/contact";
 import type { ContentMap } from "@/types/content";
 
-export function FinalCTA({
+export async function FinalCTA({
   content,
   contentKey = "home",
 }: {
   content: ContentMap;
   contentKey?: "home" | "about";
 }) {
+  const { whatsappNumber } = await getContactInfo();
   const titleKey = `${contentKey}.cta.title` as const;
   const descKey = `${contentKey}.cta.description` as const;
+
   return (
     <section className="flex w-full flex-col items-center bg-bg px-6 py-20 md:px-12 md:py-30 lg:px-20">
       <Reveal>
@@ -22,13 +24,11 @@ export function FinalCTA({
           <p className="mt-4 max-w-[440px] text-center text-sm font-light leading-6 text-ink-soft md:mt-5 md:text-base md:leading-7">
             {content[descKey]}
           </p>
-          <WhatsAppButton
-            number={SITE_CONFIG.whatsappNumber}
-            size="lg"
-            className="mt-8 md:mt-12"
-          >
-            Escribinos por WhatsApp
-          </WhatsAppButton>
+          {whatsappNumber ? (
+            <WhatsAppButton number={whatsappNumber} size="lg" className="mt-8 md:mt-12">
+              Escribinos por WhatsApp
+            </WhatsAppButton>
+          ) : null}
         </div>
       </Reveal>
     </section>

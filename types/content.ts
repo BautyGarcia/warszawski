@@ -4,7 +4,7 @@ export type ContentRow = {
   id: string;
   key: string;
   value: string;
-  page: "home" | "about";
+  page: "home" | "about" | "contact";
   section: string;
   label: string;
   field_type: "short_text" | "long_text" | "url";

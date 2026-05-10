@@ -2,17 +2,19 @@ import { Reveal } from "@/components/public/Reveal";
 import { ProductCard } from "./ProductCard";
 import { SectionHeader } from "./SectionHeader";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { getContactInfo } from "@/lib/content/contact";
 import type { Product } from "@/types/product";
 import type { ContentMap } from "@/types/content";
 
-export function CollectionSection({
+export async function CollectionSection({
   content,
   products,
 }: {
   content: ContentMap;
   products: Product[];
 }) {
+  const { whatsappNumber } = await getContactInfo();
+
   return (
     <section id="coleccion" className="flex w-full flex-col pb-20 md:pb-25">
       <SectionHeader
@@ -25,13 +27,11 @@ export function CollectionSection({
           <p className="max-w-[480px] text-sm font-light leading-7 text-ink-soft md:text-base md:leading-8">
             La coleccion esta llegando. Escribinos por WhatsApp y te contamos qué modelos tenemos disponibles.
           </p>
-          <WhatsAppButton
-            number={SITE_CONFIG.whatsappNumber}
-            size="md"
-            className="mt-8"
-          >
-            Consultar disponibilidad
-          </WhatsAppButton>
+          {whatsappNumber ? (
+            <WhatsAppButton number={whatsappNumber} size="md" className="mt-8">
+              Consultar disponibilidad
+            </WhatsAppButton>
+          ) : null}
         </Reveal>
       ) : (
         <div className="grid w-full grid-cols-1 gap-x-6 gap-y-12 px-6 md:grid-cols-2 md:gap-y-16 md:px-12 lg:px-20">

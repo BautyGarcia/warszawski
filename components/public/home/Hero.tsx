@@ -1,9 +1,11 @@
 import { Reveal } from "@/components/public/Reveal";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { getContactInfo } from "@/lib/content/contact";
 import type { ContentMap } from "@/types/content";
 
-export function Hero({ content }: { content: ContentMap }) {
+export async function Hero({ content }: { content: ContentMap }) {
+  const { whatsappNumber } = await getContactInfo();
+
   return (
     <section className="flex min-h-screen w-full shrink-0 flex-col items-center justify-center bg-bg px-6 py-24 md:px-12 md:py-32 lg:px-20">
       <Reveal immediate delay={0}>
@@ -24,11 +26,13 @@ export function Hero({ content }: { content: ContentMap }) {
         </p>
       </Reveal>
 
-      <Reveal immediate delay={400} className="mt-10 md:mt-14">
-        <WhatsAppButton number={SITE_CONFIG.whatsappNumber} size="md">
-          {content["home.hero.cta"]}
-        </WhatsAppButton>
-      </Reveal>
+      {whatsappNumber ? (
+        <Reveal immediate delay={400} className="mt-10 md:mt-14">
+          <WhatsAppButton number={whatsappNumber} size="md">
+            {content["home.hero.cta"]}
+          </WhatsAppButton>
+        </Reveal>
+      ) : null}
 
       <Reveal immediate delay={520} className="mt-5">
         <span className="block text-center text-xs tracking-[0.05em] text-gold-dark">

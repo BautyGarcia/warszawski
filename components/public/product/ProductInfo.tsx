@@ -1,6 +1,6 @@
 import { ColorPicker } from "./ColorPicker";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { getContactInfo } from "@/lib/content/contact";
 import type { Product } from "@/types/product";
 
 const LENS_LABELS: Record<NonNullable<Product["lens_type"]>, string> = {
@@ -9,7 +9,9 @@ const LENS_LABELS: Record<NonNullable<Product["lens_type"]>, string> = {
   multifocal: "Multifocal",
 };
 
-export function ProductInfo({ product }: { product: Product }) {
+export async function ProductInfo({ product }: { product: Product }) {
+  const { whatsappNumber } = await getContactInfo();
+
   return (
     <div className="flex flex-col justify-center py-8 md:h-160 md:py-12 md:pl-18">
       {product.is_exclusive ? (
@@ -37,14 +39,16 @@ export function ProductInfo({ product }: { product: Product }) {
 
       <div className="mt-8 flex flex-col gap-6 md:mt-10">
         <ColorPicker colors={product.available_colors} />
-        <WhatsAppButton
-          number={SITE_CONFIG.whatsappNumber}
-          message={`Hola, quiero consultar por ${product.name}`}
-          size="md"
-          className="w-full"
-        >
-          Consultar por {product.name}
-        </WhatsAppButton>
+        {whatsappNumber ? (
+          <WhatsAppButton
+            number={whatsappNumber}
+            message={`Hola, quiero consultar por ${product.name}`}
+            size="md"
+            className="w-full"
+          >
+            Consultar por {product.name}
+          </WhatsAppButton>
+        ) : null}
       </div>
     </div>
   );

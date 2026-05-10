@@ -4,6 +4,7 @@ import { ValuesSection } from "@/components/public/about/ValuesSection";
 import { FinalCTA } from "@/components/public/home/FinalCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { getContentMap } from "@/lib/content/fetch";
+import { getContactInfo } from "@/lib/content/contact";
 import { buildAboutMetadata, organizationJsonLd } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -12,10 +13,13 @@ export async function generateMetadata() {
 }
 
 export default async function AboutPage() {
-  const content = await getContentMap("about");
+  const [content, contact] = await Promise.all([
+    getContentMap("about"),
+    getContactInfo(),
+  ]);
   return (
     <main className="flex flex-col">
-      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={organizationJsonLd(contact)} />
       <section className="flex min-h-screen w-full flex-col justify-center bg-bg">
         <AboutHero content={content} />
         <OriginStory content={content} />

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/public/Reveal";
 import { cn } from "@/lib/utils";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { getContactInfo } from "@/lib/content/contact";
 import type { Product } from "@/types/product";
 
 type Props = {
@@ -12,7 +12,8 @@ type Props = {
   align: "image-left" | "image-right";
 };
 
-export function ExclusiveBlock({ index, product, align }: Props) {
+export async function ExclusiveBlock({ index, product, align }: Props) {
+  const { whatsappNumber } = await getContactInfo();
   const numberLabel = String(index).padStart(2, "0");
   const isLeft = align === "image-left";
   const cover = product.images[0];
@@ -58,17 +59,19 @@ export function ExclusiveBlock({ index, product, align }: Props) {
       <p className="mt-4 text-sm font-light leading-6 text-bg/70 md:mt-5 md:text-[15px] md:leading-[26px]">
         {product.description ?? product.short_description}
       </p>
-      <Link
-        href={buildWhatsAppUrl(SITE_CONFIG.whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group mt-8 inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg md:mt-10"
-      >
-        <span className="relative">
-          Consultar por {product.name}
-          <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
-        </span>
-      </Link>
+      {whatsappNumber ? (
+        <Link
+          href={buildWhatsAppUrl(whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-8 inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg md:mt-10"
+        >
+          <span className="relative">
+            Consultar por {product.name}
+            <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
+          </span>
+        </Link>
+      ) : null}
     </div>
   );
 

@@ -10,7 +10,9 @@ const supabaseConfigured =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
   !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export async function getContentMap(page?: "home" | "about"): Promise<ContentMap> {
+export async function getContentMap(
+  page?: "home" | "about" | "contact",
+): Promise<ContentMap> {
   if (!supabaseConfigured) return DEFAULTS;
   try {
     const sb = getSupabasePublic();

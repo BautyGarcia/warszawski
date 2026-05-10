@@ -5,6 +5,7 @@ import { BrandStatement } from "@/components/public/home/BrandStatement";
 import { FinalCTA } from "@/components/public/home/FinalCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { getContentMap } from "@/lib/content/fetch";
+import { getContactInfo } from "@/lib/content/contact";
 import { listProducts, listExclusiveProducts } from "@/lib/products/queries";
 import { buildHomeMetadata, organizationJsonLd } from "@/lib/seo";
 
@@ -14,17 +15,18 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [content, allProducts, exclusiveProducts] = await Promise.all([
+  const [content, allProducts, exclusiveProducts, contact] = await Promise.all([
     getContentMap("home"),
     listProducts(),
     listExclusiveProducts(),
+    getContactInfo(),
   ]);
 
   const hasExclusive = exclusiveProducts.length > 0;
 
   return (
     <main className="flex flex-col">
-      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={organizationJsonLd(contact)} />
       <Hero content={content} />
       {hasExclusive ? (
         <>

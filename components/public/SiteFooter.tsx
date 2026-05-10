@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import type { ContactInfo } from "@/lib/content/contact";
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
@@ -8,7 +9,19 @@ const NAV_LINKS = [
   { label: "Nosotros", href: "/nosotros" },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ contact }: { contact: ContactInfo }) {
+  const socials = [
+    contact.whatsappNumber
+      ? {
+          label: "WhatsApp",
+          href: buildWhatsAppUrl(contact.whatsappNumber),
+        }
+      : null,
+    contact.instagramUrl ? { label: "Instagram", href: contact.instagramUrl } : null,
+    contact.facebookUrl ? { label: "Facebook", href: contact.facebookUrl } : null,
+    contact.tiktokUrl ? { label: "TikTok", href: contact.tiktokUrl } : null,
+  ].filter((x): x is { label: string; href: string } => x !== null);
+
   return (
     <footer className="flex w-full flex-col gap-12 border-t border-bg/10 bg-ink px-6 py-12 md:flex-row md:items-start md:justify-between md:px-12 md:py-16 lg:px-20">
       <div className="flex flex-col gap-4">
@@ -28,17 +41,16 @@ export function SiteFooter() {
             </FooterLink>
           ))}
         </FooterColumn>
-        <FooterColumn title="Contacto">
-          <FooterLink
-            href={buildWhatsAppUrl(SITE_CONFIG.whatsappNumber)}
-            external
-          >
-            WhatsApp
-          </FooterLink>
-          <FooterLink href={SITE_CONFIG.instagramUrl} external>
-            Instagram
-          </FooterLink>
-        </FooterColumn>
+
+        {socials.length > 0 ? (
+          <FooterColumn title="Contacto">
+            {socials.map((s) => (
+              <FooterLink key={s.label} href={s.href} external>
+                {s.label}
+              </FooterLink>
+            ))}
+          </FooterColumn>
+        ) : null}
       </div>
     </footer>
   );

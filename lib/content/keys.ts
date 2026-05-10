@@ -1,6 +1,6 @@
 export type ContentField = {
   key: string;
-  page: "home" | "about";
+  page: "home" | "about" | "contact";
   section: string;
   label: string;
   fieldType: "short_text" | "long_text" | "url";
@@ -250,5 +250,41 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     fieldType: "long_text",
     defaultValue:
       "Escribinos por WhatsApp y charlemos sobre lo que estas buscando. Sin apuro, sin compromiso.",
+  },
+
+  // ── CONTACT / whatsapp ───────────────────────────────────
+  {
+    key: "contact.whatsapp_number",
+    page: "contact",
+    section: "whatsapp",
+    label: "Numero de WhatsApp",
+    fieldType: "short_text",
+    defaultValue: "",
+  },
+
+  // ── CONTACT / social ─────────────────────────────────────
+  {
+    key: "contact.instagram_url",
+    page: "contact",
+    section: "social",
+    label: "URL de Instagram",
+    fieldType: "url",
+    defaultValue: "",
+  },
+  {
+    key: "contact.facebook_url",
+    page: "contact",
+    section: "social",
+    label: "URL de Facebook",
+    fieldType: "url",
+    defaultValue: "",
+  },
+  {
+    key: "contact.tiktok_url",
+    page: "contact",
+    section: "social",
+    label: "URL de TikTok",
+    fieldType: "url",
+    defaultValue: "",
   },
 ];
