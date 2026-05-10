@@ -1,4 +1,4 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabasePublic } from "@/lib/supabase/public";
 import { DEMO_PRODUCTS } from "@/lib/products/demo";
 import type { Product } from "@/types/product";
 
@@ -9,7 +9,7 @@ const supabaseConfigured =
 export async function listProducts(): Promise<Product[]> {
   if (!supabaseConfigured) return DEMO_PRODUCTS;
   try {
-    const sb = await getSupabaseServer();
+    const sb = getSupabasePublic();
     const { data } = await sb.from("products").select("*").order("display_order");
     return (data ?? []) as Product[];
   } catch {
@@ -20,7 +20,7 @@ export async function listProducts(): Promise<Product[]> {
 export async function listExclusiveProducts(): Promise<Product[]> {
   if (!supabaseConfigured) return DEMO_PRODUCTS.filter((p) => p.is_exclusive).slice(0, 4);
   try {
-    const sb = await getSupabaseServer();
+    const sb = getSupabasePublic();
     const { data } = await sb
       .from("products")
       .select("*")
@@ -38,7 +38,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     return DEMO_PRODUCTS.find((p) => p.slug === slug) ?? null;
   }
   try {
-    const sb = await getSupabaseServer();
+    const sb = getSupabasePublic();
     const { data } = await sb
       .from("products")
       .select("*")

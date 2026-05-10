@@ -1,4 +1,4 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabasePublic } from "@/lib/supabase/public";
 import { SITE_CONTENT_FIELDS } from "@/lib/content/keys";
 import type { ContentMap, ContentRow } from "@/types/content";
 
@@ -13,7 +13,7 @@ const supabaseConfigured =
 export async function getContentMap(page?: "home" | "about"): Promise<ContentMap> {
   if (!supabaseConfigured) return DEFAULTS;
   try {
-    const sb = await getSupabaseServer();
+    const sb = getSupabasePublic();
     const q = sb.from("site_content").select("key,value");
     const { data, error } = page ? await q.eq("page", page) : await q;
     if (error || !data) return DEFAULTS;
@@ -27,7 +27,7 @@ export async function getContentMap(page?: "home" | "about"): Promise<ContentMap
 export async function getAllContentRows(): Promise<ContentRow[]> {
   if (!supabaseConfigured) return [];
   try {
-    const sb = await getSupabaseServer();
+    const sb = getSupabasePublic();
     const { data } = await sb
       .from("site_content")
       .select("*")
