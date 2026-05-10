@@ -52,7 +52,7 @@ export default async function ProductPage({
           <ProductInfo product={product} />
         </div>
       </section>
-      <ProductThumbnails />
+      {product.images.length > 0 ? <ProductThumbnails /> : null}
       <RelatedProducts products={related} />
     </main>
   );

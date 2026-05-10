@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal } from "@/components/public/Reveal";
 import { cn } from "@/lib/utils";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -14,18 +15,30 @@ type Props = {
 export function ExclusiveBlock({ index, product, align }: Props) {
   const numberLabel = String(index).padStart(2, "0");
   const isLeft = align === "image-left";
+  const cover = product.images[0];
 
   const imageSlot = (
     <div
       className={cn(
-        "flex h-64 shrink-0 items-center justify-center bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
+        "relative flex h-64 shrink-0 items-center justify-center overflow-hidden bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
         "rounded-t-sm md:rounded-t-none",
         isLeft ? "md:rounded-l-sm" : "md:rounded-r-sm",
       )}
     >
-      <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 md:text-[80px]">
-        {numberLabel}
-      </span>
+      {cover ? (
+        <Image
+          src={cover.url}
+          alt={cover.alt || product.name}
+          fill
+          sizes="(min-width: 768px) 60vw, 100vw"
+          className="object-cover"
+          unoptimized
+        />
+      ) : (
+        <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 md:text-[80px]">
+          {numberLabel}
+        </span>
+      )}
     </div>
   );
 

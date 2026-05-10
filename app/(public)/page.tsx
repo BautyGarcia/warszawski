@@ -13,11 +13,17 @@ export default async function HomePage() {
     listExclusiveProducts(),
   ]);
 
+  const hasExclusive = exclusiveProducts.length > 0;
+
   return (
     <main className="flex flex-col">
       <Hero content={content} />
-      <Divider />
-      <ExclusiveSection content={content} products={exclusiveProducts} />
+      {hasExclusive ? (
+        <>
+          <Divider />
+          <ExclusiveSection content={content} products={exclusiveProducts} />
+        </>
+      ) : null}
       <Divider />
       <CollectionSection content={content} products={allProducts} />
       <BrandStatement content={content} />
