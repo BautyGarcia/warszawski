@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/public/product/Breadcrumbs";
-import { ProductGallery } from "@/components/public/product/ProductGallery";
+import { ProductGalleryMain } from "@/components/public/product/ProductGalleryMain";
+import { ProductThumbnails } from "@/components/public/product/ProductThumbnails";
 import { ProductInfo } from "@/components/public/product/ProductInfo";
 import { RelatedProducts } from "@/components/public/product/RelatedProducts";
 import { getProductBySlug, listProducts } from "@/lib/products/queries";
@@ -45,27 +46,14 @@ export default async function ProductPage({
           { label: product.name },
         ]}
       />
-      <section className="flex h-fit w-full bg-bg px-20 pt-6">
-        <div className="flex h-160 shrink grow basis-0 items-center justify-center rounded-sm bg-bg-warm">
-          <span className="font-display text-7xl font-light leading-[88px] text-ink/6">
-            {product.name}
-          </span>
-        </div>
-        <div className="shrink-0 grow-0 basis-[480px]">
+      <section className="flex w-full flex-col bg-bg px-6 pt-6 md:flex-row md:px-12 lg:px-20">
+        <ProductGalleryMain product={product} />
+        <div className="md:shrink-0 md:grow-0 md:basis-[480px]">
           <ProductInfo product={product} />
         </div>
       </section>
-      <ProductGalleryThumbs product={product} />
+      <ProductThumbnails />
       <RelatedProducts products={related} />
     </main>
-  );
-}
-
-function ProductGalleryThumbs({ product }: { product: Awaited<ReturnType<typeof getProductBySlug>> }) {
-  if (!product) return null;
-  return (
-    <div className="px-20">
-      <ProductGallery product={product} />
-    </div>
   );
 }

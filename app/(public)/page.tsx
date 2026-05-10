@@ -28,7 +28,7 @@ export default async function HomePage() {
 
 function Divider() {
   return (
-    <div className="flex w-full justify-center px-20 py-12">
+    <div className="flex w-full justify-center px-6 py-8 md:px-12 md:py-12 lg:px-20">
       <div className="h-px w-full max-w-[1280px] bg-line" />
     </div>
   );

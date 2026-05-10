@@ -9,7 +9,7 @@ export function ValuesSection({ content }: { content: ContentMap }) {
   ];
 
   return (
-    <section className="flex w-full gap-12 bg-ink px-20 py-25">
+    <section className="flex w-full flex-col gap-0 bg-ink px-6 py-16 md:flex-row md:gap-12 md:px-12 md:py-25 lg:px-20">
       {values.map((v, i) => (
         <ValueCard
           key={i}

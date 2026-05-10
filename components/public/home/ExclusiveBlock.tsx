@@ -17,11 +17,13 @@ export function ExclusiveBlock({ index, product, align }: Props) {
   const imageSlot = (
     <div
       className={cn(
-        "flex shrink grow basis-0 items-center justify-center bg-bg-warm",
-        isLeft ? "rounded-l-sm" : "rounded-r-sm",
+        "flex h-64 shrink-0 items-center justify-center bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
+        // mobile: rounded top; desktop: rounded by side
+        "rounded-t-sm md:rounded-t-none",
+        isLeft ? "md:rounded-l-sm" : "md:rounded-r-sm",
       )}
     >
-      <span className="font-display text-[80px] font-light leading-24 tracking-[-0.02em] text-ink/8">
+      <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 md:text-[80px]">
         {numberLabel}
       </span>
     </div>
@@ -30,24 +32,25 @@ export function ExclusiveBlock({ index, product, align }: Props) {
   const panel = (
     <div
       className={cn(
-        "flex shrink-0 grow-0 basis-[480px] flex-col justify-center bg-ink px-18 py-16",
-        isLeft ? "rounded-r-sm" : "rounded-l-sm",
+        "flex flex-col justify-center bg-ink px-8 py-12 md:shrink-0 md:grow-0 md:basis-[480px] md:px-18 md:py-16",
+        "rounded-b-sm md:rounded-b-none",
+        isLeft ? "md:rounded-r-sm" : "md:rounded-l-sm",
       )}
     >
-      <span className="mb-6 inline-block text-[11px] font-medium uppercase tracking-[0.3em] text-gold">
+      <span className="mb-4 inline-block text-[10px] font-medium uppercase tracking-[0.3em] text-gold md:mb-6 md:text-[11px]">
         Modelo Exclusivo
       </span>
-      <h3 className="font-display text-[40px] font-bold leading-12 tracking-[-0.01em] text-bg">
+      <h3 className="font-display text-3xl font-bold leading-tight tracking-[-0.01em] text-bg md:text-[40px] md:leading-12">
         {product.name}
       </h3>
-      <p className="mt-5 text-[15px] font-light leading-[26px] text-bg/70">
+      <p className="mt-4 text-sm font-light leading-6 text-bg/70 md:mt-5 md:text-[15px] md:leading-[26px]">
         {product.description ?? product.short_description}
       </p>
       <Link
         href={buildWhatsAppUrl(SITE_CONFIG.whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-10 inline-block w-fit border-b border-gold pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-opacity hover:opacity-80"
+        className="mt-8 inline-block w-fit border-b border-gold pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-opacity hover:opacity-80 md:mt-10"
       >
         Consultar por {product.name}
       </Link>
@@ -55,7 +58,7 @@ export function ExclusiveBlock({ index, product, align }: Props) {
   );
 
   return (
-    <article className="flex h-[560px] w-full shrink-0 px-20">
+    <article className="flex w-full flex-col px-6 md:h-[560px] md:flex-row md:px-12 lg:px-20">
       {isLeft ? (
         <>
           {imageSlot}
@@ -63,8 +66,14 @@ export function ExclusiveBlock({ index, product, align }: Props) {
         </>
       ) : (
         <>
-          {panel}
-          {imageSlot}
+          <div className="contents md:hidden">
+            {imageSlot}
+            {panel}
+          </div>
+          <div className="hidden md:contents">
+            {panel}
+            {imageSlot}
+          </div>
         </>
       )}
     </article>

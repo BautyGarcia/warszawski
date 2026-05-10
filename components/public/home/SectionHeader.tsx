@@ -9,15 +9,20 @@ type Props = {
 
 export function SectionHeader({ label, title, description, className }: Props) {
   return (
-    <div className={cn("flex w-full flex-col items-center px-20 pb-16 pt-25", className)}>
-      <span className="mb-6 inline-block text-[11px] font-medium uppercase tracking-[0.3em] text-gold-dark">
+    <div
+      className={cn(
+        "flex w-full flex-col items-center px-6 pb-12 pt-16 md:px-12 md:pb-16 md:pt-25 lg:px-20",
+        className,
+      )}
+    >
+      <span className="mb-4 inline-block text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:mb-6 md:text-[11px]">
         {label}
       </span>
-      <h2 className="text-center font-display text-[56px] font-bold leading-16 tracking-[-0.02em] text-ink">
+      <h2 className="text-center font-display text-4xl font-bold leading-tight tracking-[-0.02em] text-ink md:text-5xl lg:text-[56px] lg:leading-16">
         {title}
       </h2>
       {description ? (
-        <p className="mt-5 max-w-[520px] text-center text-base font-light leading-7 text-ink-soft">
+        <p className="mt-4 max-w-[520px] text-center text-sm font-light leading-6 text-ink-soft md:mt-5 md:text-base md:leading-7">
           {description}
         </p>
       ) : null}

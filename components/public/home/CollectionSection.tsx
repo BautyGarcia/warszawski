@@ -11,12 +11,12 @@ export function CollectionSection({
   products: Product[];
 }) {
   return (
-    <section id="coleccion" className="flex w-full flex-col">
+    <section id="coleccion" className="flex w-full flex-col pb-20 md:pb-25">
       <SectionHeader
         label={content["home.collection.label"]}
         title={content["home.collection.title"]}
       />
-      <div className="grid w-full grid-cols-1 gap-x-6 gap-y-16 px-20 md:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-x-6 gap-y-12 px-6 md:grid-cols-2 md:gap-y-16 md:px-12 lg:px-20">
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}

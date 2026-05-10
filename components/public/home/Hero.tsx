@@ -4,24 +4,24 @@ import type { ContentMap } from "@/types/content";
 
 export function Hero({ content }: { content: ContentMap }) {
   return (
-    <section className="flex h-[800px] w-full shrink-0 flex-col items-center justify-center bg-bg px-20 pb-30 pt-40">
-      <span className="mb-10 inline-block whitespace-pre-line text-[11px] font-medium uppercase tracking-[0.3em] text-gold-dark">
+    <section className="flex min-h-screen w-full shrink-0 flex-col items-center justify-center bg-bg px-6 py-24 md:px-12 md:py-32 lg:px-20">
+      <span className="mb-6 inline-block max-w-[480px] text-center text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:mb-10 md:text-[11px]">
         {content["home.hero.label"]}
       </span>
-      <h1 className="text-center font-display text-[148px] font-black leading-[148px] tracking-[-0.02em] text-ink">
+      <h1 className="text-center font-display text-[64px] font-black leading-none tracking-[-0.02em] text-ink sm:text-7xl md:text-9xl lg:text-[148px]">
         WARSZAWSKI
       </h1>
-      <p className="mt-8 max-w-[480px] text-center text-xl font-light leading-8 text-ink-soft">
+      <p className="mt-6 max-w-[480px] text-center text-base font-light leading-7 text-ink-soft md:mt-8 md:text-xl md:leading-8">
         {content["home.hero.subtitle"]}
       </p>
       <WhatsAppButton
         number={SITE_CONFIG.whatsappNumber}
         size="md"
-        className="mt-14"
+        className="mt-10 md:mt-14"
       >
         {content["home.hero.cta"]}
       </WhatsAppButton>
-      <span className="mt-5 inline-block text-xs tracking-[0.05em] text-gold-dark">
+      <span className="mt-5 inline-block text-center text-xs tracking-[0.05em] text-gold-dark">
         {content["home.hero.subcta"]}
       </span>
     </section>

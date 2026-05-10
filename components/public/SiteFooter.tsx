@@ -10,7 +10,7 @@ const NAV_LINKS = [
 
 export function SiteFooter() {
   return (
-    <footer className="flex w-full items-start justify-between border-t border-bg/10 bg-ink px-20 py-16">
+    <footer className="flex w-full flex-col gap-12 border-t border-bg/10 bg-ink px-6 py-12 md:flex-row md:items-start md:justify-between md:px-12 md:py-16 lg:px-20">
       <div className="flex flex-col gap-4">
         <span className="font-display text-lg font-bold tracking-[0.12em] text-bg">
           {SITE_CONFIG.brand.name}
@@ -20,7 +20,7 @@ export function SiteFooter() {
         </p>
       </div>
 
-      <div className="flex gap-16">
+      <div className="flex flex-wrap gap-10 md:gap-16">
         <FooterColumn title="Navegacion">
           {NAV_LINKS.map((l) => (
             <FooterLink key={l.href} href={l.href}>

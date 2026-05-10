@@ -12,17 +12,17 @@ export function FinalCTA({
   const titleKey = `${contentKey}.cta.title` as const;
   const descKey = `${contentKey}.cta.description` as const;
   return (
-    <section className="flex w-full flex-col items-center bg-bg px-20 py-30">
-      <h2 className="text-center font-display text-5xl font-bold leading-14 tracking-[-0.02em] text-ink">
+    <section className="flex w-full flex-col items-center bg-bg px-6 py-20 md:px-12 md:py-30 lg:px-20">
+      <h2 className="text-center font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-ink md:text-4xl lg:text-5xl lg:leading-14">
         {content[titleKey]}
       </h2>
-      <p className="mt-5 max-w-[440px] text-center text-base font-light leading-7 text-ink-soft">
+      <p className="mt-4 max-w-[440px] text-center text-sm font-light leading-6 text-ink-soft md:mt-5 md:text-base md:leading-7">
         {content[descKey]}
       </p>
       <WhatsAppButton
         number={SITE_CONFIG.whatsappNumber}
         size="lg"
-        className="mt-12"
+        className="mt-8 md:mt-12"
       >
         Escribinos por WhatsApp
       </WhatsAppButton>

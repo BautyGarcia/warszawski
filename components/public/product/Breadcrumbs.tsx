@@ -5,7 +5,7 @@ type Item = { label: string; href?: string };
 
 export function Breadcrumbs({ items }: { items: Item[] }) {
   return (
-    <nav className="flex w-full items-center gap-2 bg-bg px-20 py-6 text-xs">
+    <nav className="flex w-full items-center gap-2 bg-bg px-6 py-5 text-xs md:px-12 md:py-6 lg:px-20">
       {items.map((item, i) => {
         const isLast = i === items.length - 1;
         return (
