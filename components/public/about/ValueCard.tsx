@@ -11,8 +11,7 @@ export function ValueCard({ index, title, description, withBorders }: Props) {
   return (
     <div
       className={cn(
-        "flex shrink grow basis-0 flex-col gap-4 py-10 md:gap-5 md:p-12",
-        // mobile: top border on every card except first; desktop: middle card has side borders
+        "flex h-full flex-col gap-4 py-10 md:gap-5 md:p-12",
         "border-t border-bg/10 first:border-t-0 md:border-t-0",
         withBorders && "md:border-x md:border-bg/10",
       )}

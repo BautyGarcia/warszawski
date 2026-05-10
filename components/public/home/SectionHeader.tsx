@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/public/Reveal";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 
 export function SectionHeader({ label, title, description, className }: Props) {
   return (
-    <div
+    <Reveal
       className={cn(
         "flex w-full flex-col items-center px-6 pb-12 pt-16 md:px-12 md:pb-16 md:pt-25 lg:px-20",
         className,
@@ -26,6 +27,6 @@ export function SectionHeader({ label, title, description, className }: Props) {
           {description}
         </p>
       ) : null}
-    </div>
+    </Reveal>
   );
 }

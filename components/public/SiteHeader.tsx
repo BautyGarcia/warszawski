@@ -1,16 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WhatsAppButton } from "./WhatsAppButton";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-bg/95 backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-40 w-full bg-bg/95 backdrop-blur transition-[border-color,box-shadow] duration-300 ease-out",
+        "border-b border-transparent",
+        scrolled && "border-line",
+      )}
+    >
       <div className="flex items-center justify-between px-6 py-6 md:px-12 md:py-7 lg:px-20 lg:py-8">
         <Link
           href="/"

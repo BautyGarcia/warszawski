@@ -23,7 +23,10 @@ export function WhatsAppButton({ number, message, children, size = "md", classNa
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-flex items-center justify-center rounded-xs bg-ink font-medium text-bg tracking-[0.06em] transition-colors hover:bg-ink-soft",
+        "inline-flex items-center justify-center rounded-xs bg-ink font-medium text-bg tracking-[0.06em]",
+        "transition-[background-color,transform] duration-300 ease-out",
+        "hover:-translate-y-px hover:bg-ink-soft",
+        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         SIZES[size],
         className,
       )}

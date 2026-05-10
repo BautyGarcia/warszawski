@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/public/Reveal";
 import { ProductCard } from "./ProductCard";
 import { SectionHeader } from "./SectionHeader";
 import type { Product } from "@/types/product";
@@ -17,8 +18,10 @@ export function CollectionSection({
         title={content["home.collection.title"]}
       />
       <div className="grid w-full grid-cols-1 gap-x-6 gap-y-12 px-6 md:grid-cols-2 md:gap-y-16 md:px-12 lg:px-20">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
+        {products.map((p, i) => (
+          <Reveal key={p.id} delay={Math.min(i, 4) * 80}>
+            <ProductCard product={p} />
+          </Reveal>
         ))}
       </div>
     </section>

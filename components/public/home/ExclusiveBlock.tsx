@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/public/Reveal";
 import { cn } from "@/lib/utils";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { SITE_CONFIG } from "@/lib/site-config";
@@ -18,7 +19,6 @@ export function ExclusiveBlock({ index, product, align }: Props) {
     <div
       className={cn(
         "flex h-64 shrink-0 items-center justify-center bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
-        // mobile: rounded top; desktop: rounded by side
         "rounded-t-sm md:rounded-t-none",
         isLeft ? "md:rounded-l-sm" : "md:rounded-r-sm",
       )}
@@ -50,32 +50,37 @@ export function ExclusiveBlock({ index, product, align }: Props) {
         href={buildWhatsAppUrl(SITE_CONFIG.whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-8 inline-block w-fit border-b border-gold pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-opacity hover:opacity-80 md:mt-10"
+        className="group mt-8 inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg md:mt-10"
       >
-        Consultar por {product.name}
+        <span className="relative">
+          Consultar por {product.name}
+          <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
+        </span>
       </Link>
     </div>
   );
 
   return (
-    <article className="flex w-full flex-col px-6 md:h-[560px] md:flex-row md:px-12 lg:px-20">
-      {isLeft ? (
-        <>
-          {imageSlot}
-          {panel}
-        </>
-      ) : (
-        <>
-          <div className="contents md:hidden">
+    <Reveal>
+      <article className="flex w-full flex-col px-6 md:h-[560px] md:flex-row md:px-12 lg:px-20">
+        {isLeft ? (
+          <>
             {imageSlot}
             {panel}
-          </div>
-          <div className="hidden md:contents">
-            {panel}
-            {imageSlot}
-          </div>
-        </>
-      )}
-    </article>
+          </>
+        ) : (
+          <>
+            <div className="contents md:hidden">
+              {imageSlot}
+              {panel}
+            </div>
+            <div className="hidden md:contents">
+              {panel}
+              {imageSlot}
+            </div>
+          </>
+        )}
+      </article>
+    </Reveal>
   );
 }

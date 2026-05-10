@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/public/Reveal";
 import { ValueCard } from "./ValueCard";
 import type { ContentMap } from "@/types/content";
 
@@ -11,13 +12,14 @@ export function ValuesSection({ content }: { content: ContentMap }) {
   return (
     <section className="flex w-full flex-col gap-0 bg-ink px-6 py-16 md:flex-row md:gap-12 md:px-12 md:py-25 lg:px-20">
       {values.map((v, i) => (
-        <ValueCard
-          key={i}
-          index={i + 1}
-          title={v.title}
-          description={v.description}
-          withBorders={i === 1}
-        />
+        <Reveal key={i} delay={i * 120} className="shrink grow basis-0">
+          <ValueCard
+            index={i + 1}
+            title={v.title}
+            description={v.description}
+            withBorders={i === 1}
+          />
+        </Reveal>
       ))}
     </section>
   );
