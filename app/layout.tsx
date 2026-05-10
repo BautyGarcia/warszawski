@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-AR" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="es-AR" className={cn(playfair.variable, inter.variable, "font-sans")}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
