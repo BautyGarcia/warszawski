@@ -32,7 +32,6 @@ export function ExclusiveBlock({ index, product, align }: Props) {
           fill
           sizes="(min-width: 768px) 60vw, 100vw"
           className="object-cover"
-          unoptimized
         />
       ) : (
         <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 md:text-[80px]">

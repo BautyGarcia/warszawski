@@ -29,7 +29,6 @@ export function ProductGallery({ product, infoSlot }: Props) {
               sizes="(min-width: 1024px) 60vw, 100vw"
               className="object-cover"
               priority
-              unoptimized
             />
           ) : (
             <span className="font-display text-6xl font-light leading-none text-ink/6 md:text-7xl">
@@ -60,7 +59,6 @@ export function ProductGallery({ product, infoSlot }: Props) {
                     fill
                     sizes="96px"
                     className="object-cover"
-                    unoptimized
                   />
                 </button>
               );

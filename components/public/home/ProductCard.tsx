@@ -15,7 +15,6 @@ export function ProductCard({ product }: { product: Product }) {
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-            unoptimized
           />
         ) : (
           <span className="font-display text-4xl font-light leading-none text-ink/8 transition-transform duration-700 ease-out group-hover:scale-[1.04] md:text-5xl">
