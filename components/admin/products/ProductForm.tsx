@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
-import { Field, Select, Textarea } from "@/components/admin/ui/Field";
+import { Field, Textarea } from "@/components/admin/ui/Field";
+import { SelectField } from "@/components/admin/ui/SelectField";
 import { FormSection } from "@/components/admin/ui/SectionHeader";
 import { ColorTagInput } from "./ColorTagInput";
 import { ImageUploader } from "./ImageUploader";
@@ -134,29 +135,39 @@ export function ProductForm(props: Props) {
             error={errors.materials?.message}
             {...register("materials")}
           />
-          <Select
-            label="Tipo de lente"
-            error={errors.lens_type?.message}
-            {...register("lens_type", {
-              setValueAs: (v) => (v === "" ? null : v),
-            })}
-          >
-            <option value="">—</option>
-            <option value="recetado">Recetado</option>
-            <option value="sol">Sol</option>
-            <option value="multifocal">Multifocal</option>
-          </Select>
-          <Select
-            label="Categoría"
-            error={errors.category?.message}
-            {...register("category", {
-              setValueAs: (v) => (v === "" ? null : v),
-            })}
-          >
-            <option value="">—</option>
-            <option value="recetados">Recetados</option>
-            <option value="sol">Sol</option>
-          </Select>
+          <Controller
+            control={control}
+            name="lens_type"
+            render={({ field }) => (
+              <SelectField
+                label="Tipo de lente"
+                value={field.value ?? null}
+                onChange={field.onChange}
+                error={errors.lens_type?.message}
+                options={[
+                  { value: "recetado", label: "Recetado" },
+                  { value: "sol", label: "Sol" },
+                  { value: "multifocal", label: "Multifocal" },
+                ]}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="category"
+            render={({ field }) => (
+              <SelectField
+                label="Categoría"
+                value={field.value ?? null}
+                onChange={field.onChange}
+                error={errors.category?.message}
+                options={[
+                  { value: "recetados", label: "Recetados" },
+                  { value: "sol", label: "Sol" },
+                ]}
+              />
+            )}
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[13px] font-medium text-ink">Colores disponibles</span>

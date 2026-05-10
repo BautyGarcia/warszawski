@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/guard";
@@ -27,6 +27,11 @@ function toRow(input: ProductInput) {
   };
 }
 
+function revalidateProductPaths() {
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/productos");
+}
+
 export async function createProductAction(input: unknown) {
   await requireAdmin();
   const data = productSchema.parse(input);
@@ -45,7 +50,7 @@ export async function createProductAction(input: unknown) {
     .insert({ ...toRow(data), display_order });
   if (error) throw new Error(error.message);
 
-  revalidateTag("products", "max");
+  revalidateProductPaths();
   redirect("/admin/productos");
 }
 
@@ -57,7 +62,7 @@ export async function updateProductAction(id: string, input: unknown) {
   const { error } = await sb.from("products").update(toRow(data)).eq("id", id);
   if (error) throw new Error(error.message);
 
-  revalidateTag("products", "max");
+  revalidateProductPaths();
   redirect("/admin/productos");
 }
 
@@ -70,7 +75,7 @@ export async function deleteProductAction(formData: FormData) {
   const { error } = await sb.from("products").delete().eq("id", id);
   if (error) throw new Error(error.message);
 
-  revalidateTag("products", "max");
+  revalidateProductPaths();
 }
 
 export async function reorderProductAction(formData: FormData) {
@@ -95,5 +100,5 @@ export async function reorderProductAction(formData: FormData) {
   await sb.from("products").update({ display_order: b.display_order }).eq("id", a.id);
   await sb.from("products").update({ display_order: a.display_order }).eq("id", b.id);
 
-  revalidateTag("products", "max");
+  revalidateProductPaths();
 }

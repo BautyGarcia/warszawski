@@ -1,7 +1,9 @@
 import { ProductsListClient } from "@/components/admin/products/ProductsListClient";
-import { listProducts } from "@/lib/products/queries";
+import { listProductsAdmin } from "@/lib/products/admin-queries";
+
+export const dynamic = "force-dynamic";
 
 export default async function ProductsPage() {
-  const products = await listProducts();
+  const products = await listProductsAdmin();
   return <ProductsListClient products={products} />;
 }

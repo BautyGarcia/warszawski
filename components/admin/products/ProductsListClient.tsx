@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ProductTableRow } from "./ProductTableRow";
+import { SelectField } from "@/components/admin/ui/SelectField";
 import type { Product } from "@/types/product";
 
 const HEADERS = [
@@ -49,15 +50,17 @@ export function ProductsListClient({ products }: { products: Product[] }) {
               className="w-44 bg-transparent text-[13px] text-ink outline-none placeholder:text-[#999]"
             />
           </div>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as "all" | "recetados" | "sol")}
-            className="h-9 appearance-none rounded-md border border-black/12 bg-white px-3 pr-8 text-[13px] text-[#6B6B6B] outline-none"
-          >
-            <option value="all">Categoría</option>
-            <option value="recetados">Recetados</option>
-            <option value="sol">Sol</option>
-          </select>
+          <SelectField
+            value={category === "all" ? null : category}
+            onChange={(v) => setCategory((v as "recetados" | "sol" | null) ?? "all")}
+            options={[
+              { value: "recetados", label: "Recetados" },
+              { value: "sol", label: "Sol" },
+            ]}
+            placeholder="Categoría"
+            size="sm"
+            className="w-32"
+          />
           <Link
             href="/admin/productos/nuevo"
             className="flex h-9 items-center gap-1.5 rounded-md bg-ink px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-ink-soft"

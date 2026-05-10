@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ColorPicker } from "./ColorPicker";
 import type { ProductColor } from "@/types/product";
 
 type Props = {
@@ -64,13 +65,7 @@ export function ColorTagInput({ value, onChange }: Props) {
             }
           }}
         />
-        <input
-          type="color"
-          value={hex}
-          onChange={(e) => setHex(e.target.value)}
-          aria-label="Elegir color"
-          className="size-9 cursor-pointer rounded-md border border-black/10 bg-transparent p-0"
-        />
+        <ColorPicker value={hex} onChange={setHex} />
         <button
           type="button"
           onClick={add}
