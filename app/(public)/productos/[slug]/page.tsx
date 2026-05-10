@@ -3,7 +3,14 @@ import { Breadcrumbs } from "@/components/public/product/Breadcrumbs";
 import { ProductGallery } from "@/components/public/product/ProductGallery";
 import { ProductInfo } from "@/components/public/product/ProductInfo";
 import { RelatedProducts } from "@/components/public/product/RelatedProducts";
+import { JsonLd } from "@/components/JsonLd";
 import { getProductBySlug, listProducts } from "@/lib/products/queries";
+import {
+  SITE_URL,
+  breadcrumbJsonLd,
+  buildProductMetadata,
+  productJsonLd,
+} from "@/lib/seo";
 
 export async function generateStaticParams() {
   const products = await listProducts();
@@ -17,11 +24,8 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) return { title: "No encontrado — Warszawski" };
-  return {
-    title: product.seo_title ?? `${product.name} — Warszawski`,
-    description: product.seo_description ?? product.short_description ?? undefined,
-  };
+  if (!product) return { title: "No encontrado" };
+  return buildProductMetadata(product);
 }
 
 export default async function ProductPage({
@@ -38,6 +42,16 @@ export default async function ProductPage({
 
   return (
     <main className="flex flex-col">
+      <JsonLd
+        data={[
+          productJsonLd(product),
+          breadcrumbJsonLd([
+            { name: "Inicio", url: SITE_URL },
+            { name: "Coleccion", url: `${SITE_URL}/#coleccion` },
+            { name: product.name },
+          ]),
+        ]}
+      />
       <Breadcrumbs
         items={[
           { label: "Inicio", href: "/" },

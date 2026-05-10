@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { SITE_URL } from "@/lib/seo";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -18,8 +19,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Warszawski — Anteojos de diseño",
-  description: "Anteojos de diseño. Hechos para vos.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Warszawski — Anteojos de diseño",
+    template: "%s — Warszawski",
+  },
+  description: "Anteojos de diseño. Mayoristas y distribuidores.",
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    siteName: "Warszawski",
+  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
+  alternates: { canonical: SITE_URL },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
