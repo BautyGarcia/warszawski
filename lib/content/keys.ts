@@ -66,7 +66,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     label: "Descripcion seccion exclusiva",
     fieldType: "long_text",
     defaultValue:
-      "Calce y diseno de autor. Armazones pensadas para perdurar, con materiales que resisten el paso del tiempo.",
+      "Calce y diseño de autor. Armazones pensadas para perdurar, con materiales que resisten el paso del tiempo.",
   },
 
   // ── HOME / collection ────────────────────────────────────
@@ -149,7 +149,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     section: "hero",
     label: "Titulo hero",
     fieldType: "short_text",
-    defaultValue: "Diseno que habla por si mismo",
+    defaultValue: "Diseño que habla por si mismo",
   },
 
   // ── ABOUT / origin ───────────────────────────────────────
@@ -168,7 +168,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     label: "Parrafo 1",
     fieldType: "long_text",
     defaultValue:
-      "Warszawski nace de una pasion por el diseno optico de autor. Cada armazon responde a una busqueda constante de calce, proporcion y caracter.",
+      "Warszawski nace de una pasion por el diseño optico de autor. Cada armazon responde a una busqueda constante de calce, proporcion y caracter.",
   },
   {
     key: "about.origin.p2",
@@ -177,7 +177,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     label: "Parrafo 2",
     fieldType: "long_text",
     defaultValue:
-      "Esa vision se traduce hoy en anteojos que combinan la rigurosidad del diseno con materiales de primera linea. No buscamos seguir tendencias. Buscamos crear objetos que perduren.",
+      "Esa vision se traduce hoy en anteojos que combinan la rigurosidad del diseño con materiales de primera linea. No buscamos seguir tendencias. Buscamos crear objetos que perduren.",
   },
 
   // ── ABOUT / values ───────────────────────────────────────
@@ -187,7 +187,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     section: "values",
     label: "Valor 01 - Titulo",
     fieldType: "short_text",
-    defaultValue: "Diseno con intencion",
+    defaultValue: "Diseño con intencion",
   },
   {
     key: "about.value1.description",
@@ -213,7 +213,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     label: "Valor 02 - Descripcion",
     fieldType: "long_text",
     defaultValue:
-      "Acetato italiano, titanio japones, lentes de primera calidad. Los materiales definen la experiencia tanto como el diseno.",
+      "Acetato italiano, titanio japones, lentes de primera calidad. Los materiales definen la experiencia tanto como el diseño.",
   },
   {
     key: "about.value3.title",

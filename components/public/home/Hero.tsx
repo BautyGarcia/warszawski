@@ -8,7 +8,7 @@ export function Hero({ content }: { content: ContentMap }) {
       <span className="mb-6 inline-block max-w-[480px] text-center text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:mb-10 md:text-[11px]">
         {content["home.hero.label"]}
       </span>
-      <h1 className="text-center font-display text-[64px] font-black leading-none tracking-[-0.02em] text-ink sm:text-7xl md:text-9xl lg:text-[148px]">
+      <h1 className="w-full text-center font-display text-[clamp(2.75rem,13vw,9.25rem)] font-black leading-none tracking-[-0.02em] text-ink">
         WARSZAWSKI
       </h1>
       <p className="mt-6 max-w-[480px] text-center text-base font-light leading-7 text-ink-soft md:mt-8 md:text-xl md:leading-8">

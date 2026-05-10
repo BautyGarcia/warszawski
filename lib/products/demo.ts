@@ -8,7 +8,7 @@ export const DEMO_PRODUCTS: Product[] = [
     name: "Aurora",
     slug: "aurora",
     description:
-      "El modelo Aurora combina calce exclusivo con un diseno de autor. Acetato negro pulido, lineas precisas y caracter sobrio. Disponible en multiples colores.",
+      "El modelo Aurora combina calce exclusivo con un diseño de autor. Acetato negro pulido, lineas precisas y caracter sobrio. Disponible en multiples colores.",
     short_description: "Recetado — Acetato negro",
     is_exclusive: true,
     materials: "Acetato italiano",

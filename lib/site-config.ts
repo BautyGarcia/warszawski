@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   instagramUrl: "https://instagram.com/warszawski",
   brand: {
     name: "WARSZAWSKI",
-    tagline: "Anteojos de diseno. Mayoristas y distribuidores.",
+    tagline: "Anteojos de diseño. Mayoristas y distribuidores.",
     legal: "© Warszawski. Todos los derechos reservados.",
   },
   nav: {

@@ -18,8 +18,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Warszawski — Anteojos de diseno",
-  description: "Anteojos de diseno. Hechos para vos.",
+  title: "Warszawski — Anteojos de diseño",
+  description: "Anteojos de diseño. Hechos para vos.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

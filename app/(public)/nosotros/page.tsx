@@ -6,15 +6,17 @@ import { getContentMap } from "@/lib/content/fetch";
 
 export const metadata = {
   title: "Nosotros — Warszawski",
-  description: "Diseno que habla por si mismo. Conoce Warszawski.",
+  description: "Diseño que habla por si mismo. Conoce Warszawski.",
 };
 
 export default async function AboutPage() {
   const content = await getContentMap("about");
   return (
     <main className="flex flex-col">
-      <AboutHero content={content} />
-      <OriginStory content={content} />
+      <section className="flex min-h-screen w-full flex-col justify-center bg-bg">
+        <AboutHero content={content} />
+        <OriginStory content={content} />
+      </section>
       <ValuesSection content={content} />
       <FinalCTA content={content} contentKey="about" />
     </main>

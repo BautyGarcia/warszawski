@@ -2,7 +2,7 @@ import type { ContentMap } from "@/types/content";
 
 export function OriginStory({ content }: { content: ContentMap }) {
   return (
-    <section className="flex w-full flex-col gap-10 bg-bg px-6 pb-16 md:flex-row md:gap-20 md:px-12 md:pb-25 lg:px-20">
+    <div className="flex w-full flex-col gap-10 px-6 pb-16 md:flex-row md:gap-20 md:px-12 md:pb-25 lg:px-20">
       <div className="flex aspect-[5/6] w-full shrink-0 items-center justify-center rounded-sm bg-bg-warm md:h-120 md:w-auto md:basis-[400px] md:aspect-auto">
         <span className="font-display text-5xl font-light leading-none text-ink/6 md:text-[64px] md:leading-[78px]">
           W
@@ -19,6 +19,6 @@ export function OriginStory({ content }: { content: ContentMap }) {
           {content["about.origin.p2"]}
         </p>
       </div>
-    </section>
+    </div>
   );
 }
