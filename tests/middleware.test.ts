@@ -49,4 +49,18 @@ describe("resolveTarget", () => {
       rewrite: "/admin/productos/abc-123",
     });
   });
+
+  it("vercel.app host serves both public and admin from same domain", () => {
+    expect(resolveTarget("warszawski.vercel.app", "/")).toEqual({ rewrite: null });
+    expect(resolveTarget("warszawski.vercel.app", "/admin")).toEqual({ rewrite: null });
+    expect(resolveTarget("warszawski.vercel.app", "/admin/productos")).toEqual({
+      rewrite: null,
+    });
+  });
+
+  it("vercel preview deployments also serve in single-domain mode", () => {
+    expect(
+      resolveTarget("warszawski-git-feature-bauty.vercel.app", "/admin"),
+    ).toEqual({ rewrite: null });
+  });
 });
