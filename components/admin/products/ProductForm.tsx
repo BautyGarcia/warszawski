@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { Field, Textarea } from "@/components/admin/ui/Field";
 import { SelectField } from "@/components/admin/ui/SelectField";
 import { FormSection } from "@/components/admin/ui/SectionHeader";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ColorTagInput } from "./ColorTagInput";
 import { ImageUploader } from "./ImageUploader";
 import { productSchema, type ProductFormValues } from "@/schemas/product";
@@ -196,12 +197,11 @@ export function ProductForm(props: Props) {
           control={control}
           name="is_exclusive"
           render={({ field }) => (
-            <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
+            <label className="flex cursor-pointer items-start gap-3">
+              <Checkbox
                 checked={field.value ?? false}
-                onChange={(e) => field.onChange(e.target.checked)}
-                className="mt-1 size-4 rounded border-black/20 accent-ink"
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+                className="mt-0.5"
               />
               <span className="flex flex-col gap-0.5">
                 <span className="text-[13px] font-medium text-ink">Producto exclusivo</span>

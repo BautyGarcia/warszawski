@@ -48,8 +48,11 @@ export function SelectField({
         <SelectTrigger
           size={size}
           className={cn(
-            "rounded-md border-black/10 bg-[#F7F7F5] text-sm text-ink shadow-none transition-colors focus-visible:border-ink/40 focus-visible:bg-white",
-            size === "default" && "h-10",
+            "w-full rounded-md border-black/10 bg-[#F7F7F5] px-3 text-sm text-ink shadow-none transition-colors",
+            size === "default" && "data-[size=default]:h-10",
+            size === "sm" && "data-[size=sm]:h-9 data-[size=sm]:rounded-md",
+            "data-[placeholder]:text-[#999]",
+            "focus-visible:border-ink/40 focus-visible:bg-white focus-visible:ring-0",
           )}
         >
           <SelectValue placeholder={placeholder} />

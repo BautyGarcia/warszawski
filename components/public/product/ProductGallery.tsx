@@ -14,60 +14,64 @@ export function ProductGallery({ product, infoSlot }: Props) {
   const images = product.images;
   const [activeIndex, setActiveIndex] = useState(0);
   const active = images[activeIndex];
+  const thumbs = images.slice(0, 4);
 
   return (
-    <>
-      <section className="flex w-full flex-col bg-bg px-6 pt-6 md:flex-row md:px-12 lg:px-20">
-        <div className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-sm bg-bg-warm md:h-160 md:w-auto md:flex-1 md:aspect-auto">
+    <section className="flex w-full flex-col gap-8 bg-bg px-6 pt-6 md:gap-12 md:px-12 lg:flex-row lg:items-start lg:gap-12 lg:px-20">
+      <div className="flex w-full flex-col items-center gap-3 md:gap-4 lg:flex-1 lg:items-start">
+        <div className="relative flex aspect-square w-full max-w-[520px] items-center justify-center overflow-hidden rounded-sm bg-bg-warm">
           {active ? (
             <Image
               key={active.url}
               src={active.url}
               alt={active.alt || product.name}
               fill
-              sizes="(min-width: 768px) 60vw, 100vw"
+              sizes="(min-width: 1024px) 520px, (min-width: 768px) 520px, 100vw"
               className="object-cover"
               priority
               unoptimized
             />
           ) : (
-            <span className="font-display text-6xl font-light leading-none text-ink/6 md:text-7xl md:leading-[88px]">
+            <span className="font-display text-6xl font-light leading-none text-ink/6 md:text-7xl">
               {product.name}
             </span>
           )}
         </div>
-        <div className="md:shrink-0 md:grow-0 md:basis-[480px]">{infoSlot}</div>
-      </section>
 
-      {images.length > 1 ? (
-        <div className="flex w-full gap-3 px-6 pt-4 md:gap-4 md:px-12 lg:px-20">
-          {images.map((img, i) => {
-            const isActive = i === activeIndex;
-            return (
-              <button
-                key={img.url + i}
-                type="button"
-                onClick={() => setActiveIndex(i)}
-                aria-label={`Imagen ${i + 1}`}
-                aria-pressed={isActive}
-                className={cn(
-                  "relative flex aspect-[2/1] shrink grow basis-0 items-center justify-center overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors md:h-32 md:aspect-auto",
-                  isActive ? "border-gold" : "border-transparent hover:border-line",
-                )}
-              >
-                <Image
-                  src={img.url}
-                  alt={img.alt || `${product.name} — imagen ${i + 1}`}
-                  fill
-                  sizes="200px"
-                  className="object-cover"
-                  unoptimized
-                />
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
-    </>
+        {thumbs.length > 1 ? (
+          <div className="flex w-full max-w-[520px] gap-3 md:gap-4">
+            {thumbs.map((img, i) => {
+              const isActive = i === activeIndex;
+              return (
+                <button
+                  key={img.url + i}
+                  type="button"
+                  onClick={() => setActiveIndex(i)}
+                  aria-label={`Imagen ${i + 1}`}
+                  aria-pressed={isActive}
+                  className={cn(
+                    "relative aspect-square flex-1 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors",
+                    isActive ? "border-gold" : "border-transparent hover:border-line",
+                  )}
+                >
+                  <Image
+                    src={img.url}
+                    alt={img.alt || `${product.name} — imagen ${i + 1}`}
+                    fill
+                    sizes="120px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="lg:max-w-[480px] lg:shrink-0 lg:basis-[480px]">
+        {infoSlot}
+      </div>
+    </section>
   );
 }
