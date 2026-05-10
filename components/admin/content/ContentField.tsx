@@ -23,6 +23,7 @@ export function ContentField({ field, value, onChange }: Props) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={4}
+          placeholder={field.placeholder}
           className={textareaCls}
         />
       ) : (
@@ -30,9 +31,13 @@ export function ContentField({ field, value, onChange }: Props) {
           type={field.fieldType === "url" ? "url" : "text"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
           className={inputCls}
         />
       )}
+      {field.hint ? (
+        <span className="text-[12px] text-[#6B6B6B]">{field.hint}</span>
+      ) : null}
     </label>
   );
 }

@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { getContentMap } from "@/lib/content/fetch";
+import { normalizeExternalUrl } from "@/lib/url";
 
 export type ContactInfo = {
   whatsappNumber: string;
@@ -23,8 +24,8 @@ export const getContactInfo = cache(async (): Promise<ContactInfo> => {
       content["contact.whatsapp.number"] ||
       process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
       "",
-    instagramUrl: content["contact.social.instagram"] ?? "",
-    facebookUrl: content["contact.social.facebook"] ?? "",
-    tiktokUrl: content["contact.social.tiktok"] ?? "",
+    instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
+    facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
+    tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),
   };
 });

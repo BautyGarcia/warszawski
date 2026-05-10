@@ -5,6 +5,8 @@ export type ContentField = {
   label: string;
   fieldType: "short_text" | "long_text" | "url";
   defaultValue: string;
+  placeholder?: string;
+  hint?: string;
 };
 
 export const SITE_CONTENT_FIELDS: ContentField[] = [
@@ -260,6 +262,8 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     label: "Numero de WhatsApp",
     fieldType: "short_text",
     defaultValue: "",
+    placeholder: "5491100000000",
+    hint: "Codigo de pais + numero, sin + ni espacios. Ej: 5491100000000",
   },
 
   // ── CONTACT / social ─────────────────────────────────────
@@ -267,24 +271,27 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     key: "contact.social.instagram",
     page: "contact",
     section: "social",
-    label: "URL de Instagram",
+    label: "Instagram",
     fieldType: "url",
     defaultValue: "",
+    placeholder: "https://instagram.com/warszawski",
   },
   {
     key: "contact.social.facebook",
     page: "contact",
     section: "social",
-    label: "URL de Facebook",
+    label: "Facebook",
     fieldType: "url",
     defaultValue: "",
+    placeholder: "https://facebook.com/warszawski",
   },
   {
     key: "contact.social.tiktok",
     page: "contact",
     section: "social",
-    label: "URL de TikTok",
+    label: "TikTok",
     fieldType: "url",
     defaultValue: "",
+    placeholder: "https://tiktok.com/@warszawski",
   },
 ];
