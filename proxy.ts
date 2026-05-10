@@ -6,7 +6,7 @@ const supabaseConfigured =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
   !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const sessionRes = supabaseConfigured
     ? await updateSession(req)
     : NextResponse.next({ request: req });

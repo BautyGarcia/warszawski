@@ -1,0 +1,26 @@
+import { ProductCard } from "./ProductCard";
+import { SectionHeader } from "./SectionHeader";
+import type { Product } from "@/types/product";
+import type { ContentMap } from "@/types/content";
+
+export function CollectionSection({
+  content,
+  products,
+}: {
+  content: ContentMap;
+  products: Product[];
+}) {
+  return (
+    <section id="coleccion" className="flex w-full flex-col">
+      <SectionHeader
+        label={content["home.collection.label"]}
+        title={content["home.collection.title"]}
+      />
+      <div className="grid w-full grid-cols-1 gap-x-6 gap-y-16 px-20 md:grid-cols-2">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </section>
+  );
+}
