@@ -1,20 +1,39 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { deleteProductAction } from "@/actions/products";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function DeleteButton({ id, name }: { id: string; name: string }) {
+  const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  function onConfirm() {
+    const fd = new FormData();
+    fd.append("id", id);
+    startTransition(async () => {
+      try {
+        await deleteProductAction(fd);
+        setOpen(false);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
   return (
-    <form
-      action={deleteProductAction}
-      onSubmit={(e) => {
-        if (!window.confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) {
-          e.preventDefault();
-        }
-      }}
-    >
-      <input type="hidden" name="id" value={id} />
-      <button
-        type="submit"
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger
         aria-label={`Eliminar ${name}`}
         className="flex size-7 items-center justify-center rounded-[5px] border border-black/10 text-[#DC3545] transition-colors hover:border-[#DC3545]/40"
       >
@@ -22,7 +41,29 @@ export function DeleteButton({ id, name }: { id: string; name: string }) {
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
         </svg>
-      </button>
-    </form>
+      </AlertDialogTrigger>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Eliminar producto</AlertDialogTitle>
+          <AlertDialogDescription>
+            ¿Estás seguro de eliminar <span className="font-medium text-ink">{name}</span>? Esta acción no se puede deshacer.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              onConfirm();
+            }}
+            disabled={pending}
+            className="bg-[#DC3545] text-white hover:bg-[#C32A3B] focus-visible:ring-[#DC3545]/30"
+          >
+            {pending ? "Eliminando..." : "Eliminar"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
