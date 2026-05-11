@@ -17,11 +17,14 @@ export async function ExclusiveBlock({ index, product, align }: Props) {
   const numberLabel = String(index).padStart(2, "0");
   const isLeft = align === "image-left";
   const cover = product.images[0];
+  const productHref = `/productos/${product.slug}`;
 
   const imageSlot = (
-    <div
+    <Link
+      href={productHref}
+      aria-label={`Ver ${product.name}`}
       className={cn(
-        "relative flex h-64 shrink-0 items-center justify-center overflow-hidden bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
+        "group relative flex h-64 shrink-0 items-center justify-center overflow-hidden bg-bg-warm md:h-auto md:shrink md:grow md:basis-0",
         "rounded-t-sm md:rounded-t-none",
         isLeft ? "md:rounded-l-sm" : "md:rounded-r-sm",
       )}
@@ -32,14 +35,14 @@ export async function ExclusiveBlock({ index, product, align }: Props) {
           alt={cover.alt || product.name}
           fill
           sizes="(min-width: 768px) 60vw, 100vw"
-          className="object-cover"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
         />
       ) : (
-        <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 md:text-[80px]">
+        <span className="font-display text-6xl font-light leading-none tracking-[-0.02em] text-ink/8 transition-transform duration-700 ease-out group-hover:scale-[1.04] md:text-[80px]">
           {numberLabel}
         </span>
       )}
-    </div>
+    </Link>
   );
 
   const panel = (
@@ -53,25 +56,39 @@ export async function ExclusiveBlock({ index, product, align }: Props) {
       <span className="mb-4 inline-block text-[10px] font-medium uppercase tracking-[0.3em] text-gold md:mb-6 md:text-[11px]">
         Modelo Exclusivo
       </span>
-      <h3 className="font-display text-3xl font-bold leading-tight tracking-[-0.01em] text-bg md:text-[40px] md:leading-12">
+      <Link
+        href={productHref}
+        className="font-display text-3xl font-bold leading-tight tracking-[-0.01em] text-bg transition-colors duration-300 hover:text-gold md:text-[40px] md:leading-12"
+      >
         {product.name}
-      </h3>
+      </Link>
       <p className="mt-4 text-sm font-light leading-6 text-bg/70 md:mt-5 md:text-[15px] md:leading-[26px]">
         {product.description ?? product.short_description}
       </p>
-      {whatsappNumber ? (
+      <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4 md:mt-10">
+        {whatsappNumber ? (
+          <Link
+            href={buildWhatsAppUrl(whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg"
+          >
+            <span className="relative">
+              Consultar por {product.name}
+              <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
+            </span>
+          </Link>
+        ) : null}
         <Link
-          href={buildWhatsAppUrl(whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group mt-8 inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg md:mt-10"
+          href={productHref}
+          className="group inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-bg/50 transition-colors duration-300 hover:text-bg"
         >
-          <span className="relative">
-            Consultar por {product.name}
-            <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
+          Ver detalles
+          <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-0.5">
+            →
           </span>
         </Link>
-      ) : null}
+      </div>
     </div>
   );
 
