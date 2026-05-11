@@ -19,8 +19,13 @@ describe("SITE_CONTENT_FIELDS", () => {
   });
 
   it("editorial copy fields (home/about) have non-empty defaults", () => {
-    // Contact fields tienen default vacío a proposito (handler de empty state).
-    SITE_CONTENT_FIELDS.filter((f) => f.page !== "contact").forEach((f) =>
+    // Contact tiene defaults vacios (empty handlers). Image tampoco
+    // requiere default (placeholder visual cuando no hay imagen).
+    SITE_CONTENT_FIELDS.filter(
+      (f) =>
+        f.page !== "contact" &&
+        (f.fieldType === "short_text" || f.fieldType === "long_text"),
+    ).forEach((f) =>
       expect(f.defaultValue.length, `key ${f.key}`).toBeGreaterThan(0),
     );
   });

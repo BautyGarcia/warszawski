@@ -3,7 +3,7 @@ export type ContentField = {
   page: "home" | "about" | "contact";
   section: string;
   label: string;
-  fieldType: "short_text" | "long_text" | "url";
+  fieldType: "short_text" | "long_text" | "url" | "image";
   defaultValue: string;
   placeholder?: string;
   hint?: string;
@@ -155,6 +155,15 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
   },
 
   // ── ABOUT / origin ───────────────────────────────────────
+  {
+    key: "about.origin.image",
+    page: "about",
+    section: "origin",
+    label: "Imagen de la historia",
+    fieldType: "image",
+    defaultValue: "",
+    hint: "Idealmente vertical (proporcion 5:6 o similar). Se muestra junto al texto.",
+  },
   {
     key: "about.origin.title",
     page: "about",

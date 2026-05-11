@@ -7,7 +7,7 @@ export type ContentRow = {
   page: "home" | "about" | "contact";
   section: string;
   label: string;
-  field_type: "short_text" | "long_text" | "url";
+  field_type: "short_text" | "long_text" | "url" | "image";
   sort_order: number;
   updated_at: string;
 };

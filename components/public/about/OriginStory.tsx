@@ -1,14 +1,27 @@
+import Image from "next/image";
 import { Reveal } from "@/components/public/Reveal";
 import type { ContentMap } from "@/types/content";
 
 export function OriginStory({ content }: { content: ContentMap }) {
+  const imageUrl = content["about.origin.image"]?.trim() ?? "";
+
   return (
     <div className="flex w-full flex-col gap-10 px-6 pb-16 md:flex-row md:gap-20 md:px-12 md:pb-25 lg:px-20">
       <Reveal immediate delay={280}>
-        <div className="flex aspect-[5/6] w-full shrink-0 items-center justify-center rounded-sm bg-bg-warm md:h-120 md:w-[400px] md:aspect-auto">
-          <span className="font-display text-5xl font-light leading-none text-ink/6 md:text-[64px] md:leading-[78px]">
-            W
-          </span>
+        <div className="relative flex aspect-[5/6] w-full shrink-0 items-center justify-center overflow-hidden rounded-sm bg-bg-warm md:h-120 md:w-[400px] md:aspect-auto">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt="Warszawski"
+              fill
+              sizes="(min-width: 768px) 400px, 100vw"
+              className="object-cover"
+            />
+          ) : (
+            <span className="font-display text-5xl font-light leading-none text-ink/6 md:text-[64px] md:leading-[78px]">
+              W
+            </span>
+          )}
         </div>
       </Reveal>
       <Reveal immediate delay={400} className="flex shrink grow basis-0 flex-col justify-center">

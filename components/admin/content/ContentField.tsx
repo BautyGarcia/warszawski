@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageField } from "./ImageField";
 import type { ContentField as ContentFieldDef } from "@/lib/content/keys";
 
 const inputCls =
@@ -18,7 +19,9 @@ export function ContentField({ field, value, onChange }: Props) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-ink">{field.label}</span>
-      {field.fieldType === "long_text" ? (
+      {field.fieldType === "image" ? (
+        <ImageField value={value} onChange={onChange} />
+      ) : field.fieldType === "long_text" ? (
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
