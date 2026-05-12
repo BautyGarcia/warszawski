@@ -147,6 +147,27 @@ export function productJsonLd(p: Product) {
   };
 }
 
+export function collectionPageJsonLd(opts: {
+  url: string;
+  name: string;
+  description: string;
+  numberOfItems: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    inLanguage: "es-AR",
+    isPartOf: { "@type": "WebSite", name: "Warszawski", url: SITE_URL },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: opts.numberOfItems,
+    },
+  };
+}
+
 export function breadcrumbJsonLd(items: { name: string; url?: string }[]) {
   return {
     "@context": "https://schema.org",

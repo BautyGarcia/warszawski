@@ -33,6 +33,25 @@ export async function listExclusiveProducts(): Promise<Product[]> {
   }
 }
 
+export async function listProductsByCategory(
+  category: "recetados" | "sol",
+): Promise<Product[]> {
+  if (!supabaseConfigured) {
+    return DEMO_PRODUCTS.filter((p) => p.category === category);
+  }
+  try {
+    const sb = getSupabasePublic();
+    const { data } = await sb
+      .from("products")
+      .select("*")
+      .eq("category", category)
+      .order("display_order");
+    return (data ?? []) as Product[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!supabaseConfigured) {
     return DEMO_PRODUCTS.find((p) => p.slug === slug) ?? null;

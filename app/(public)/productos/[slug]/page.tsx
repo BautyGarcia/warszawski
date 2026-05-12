@@ -40,6 +40,13 @@ export default async function ProductPage({
   const all = await listProducts();
   const related = all.filter((p) => p.id !== product.id).slice(0, 3);
 
+  const collectionHref = product.category
+    ? `/coleccion/${product.category}`
+    : "/#coleccion";
+  const collectionUrl = product.category
+    ? `${SITE_URL}/coleccion/${product.category}`
+    : `${SITE_URL}/#coleccion`;
+
   return (
     <main className="flex flex-col">
       <JsonLd
@@ -47,7 +54,7 @@ export default async function ProductPage({
           productJsonLd(product),
           breadcrumbJsonLd([
             { name: "Inicio", url: SITE_URL },
-            { name: "Coleccion", url: `${SITE_URL}/#coleccion` },
+            { name: "Coleccion", url: collectionUrl },
             { name: product.name },
           ]),
         ]}
@@ -55,7 +62,7 @@ export default async function ProductPage({
       <Breadcrumbs
         items={[
           { label: "Inicio", href: "/" },
-          { label: "Coleccion", href: "/#coleccion" },
+          { label: "Coleccion", href: collectionHref },
           { label: product.name },
         ]}
       />
