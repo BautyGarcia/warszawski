@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-type Props = { title: string; subtitle?: string };
+type Props = { title: string; subtitle?: string; backHref?: string };
 
-export function FormHeader({ title, subtitle }: Props) {
+export function FormHeader({ title, subtitle, backHref = "/admin/productos" }: Props) {
   return (
     <div className="mb-8 flex items-start gap-4">
       <Link
-        href="/admin/productos"
+        href={backHref}
         aria-label="Volver"
         className="flex size-8 items-center justify-center rounded-md border border-black/10 text-[#6B6B6B] transition-colors hover:border-ink/30 hover:text-ink"
       >

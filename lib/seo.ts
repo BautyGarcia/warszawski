@@ -168,6 +168,37 @@ export function collectionPageJsonLd(opts: {
   };
 }
 
+export function articleJsonLd(opts: {
+  url: string;
+  title: string;
+  description: string;
+  image?: string;
+  authorName: string;
+  datePublished?: string;
+  dateModified?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.title,
+    description: opts.description,
+    image: opts.image ? [opts.image] : undefined,
+    author: { "@type": "Person", name: opts.authorName },
+    publisher: {
+      "@type": "Organization",
+      name: "Warszawski",
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/web-app-manifest-512x512.png`,
+      },
+    },
+    datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
+    mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
+    inLanguage: "es-AR",
+  };
+}
+
 export function breadcrumbJsonLd(items: { name: string; url?: string }[]) {
   return {
     "@context": "https://schema.org",

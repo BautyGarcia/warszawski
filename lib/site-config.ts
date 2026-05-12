@@ -11,6 +11,7 @@ export const SITE_CONFIG = {
   nav: {
     public: [
       { label: "Coleccion", href: "/#coleccion" },
+      { label: "Editorial", href: "/editorial" },
       { label: "Nosotros", href: "/nosotros" },
     ],
   },
