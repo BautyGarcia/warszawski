@@ -34,10 +34,12 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
   alternates: { canonical: SITE_URL },
+  // Next 16 file-convention levanta automaticamente:
+  //   app/favicon.ico       → <link rel="icon">
+  //   app/icon.svg          → <link rel="icon" type="image/svg+xml">
+  // El 96x96 y el apple-touch-icon no tienen convention, los declaramos manual.
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
     apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
