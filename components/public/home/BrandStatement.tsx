@@ -6,7 +6,7 @@ export function BrandStatement({ content }: { content: ContentMap }) {
     <section className="flex w-full flex-col items-center bg-ink px-6 py-20 md:px-12 md:py-30 lg:px-20">
       <Reveal>
         <div className="flex flex-col items-center">
-          <span className="mb-8 inline-block text-[10px] font-medium uppercase tracking-[0.3em] text-gold md:mb-12 md:text-[11px]">
+          <span className="mb-8 inline-block text-[13px] font-medium uppercase tracking-[0.28em] text-gold md:mb-12 md:text-sm">
             {content["home.brand.label"]}
           </span>
           <p className="max-w-[800px] text-center font-display text-2xl leading-9 tracking-[-0.01em] text-bg md:text-3xl md:leading-[44px] lg:text-4xl lg:leading-[52px]">

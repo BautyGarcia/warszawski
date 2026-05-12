@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { getContentMap } from "@/lib/content/fetch";
 import { getContactInfo } from "@/lib/content/contact";
 import { listProducts, listExclusiveProducts } from "@/lib/products/queries";
-import { buildHomeMetadata, organizationJsonLd } from "@/lib/seo";
+import { buildHomeMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 export async function generateMetadata() {
   const content = await getContentMap("home");
@@ -26,7 +26,7 @@ export default async function HomePage() {
 
   return (
     <main className="flex flex-col">
-      <JsonLd data={organizationJsonLd(contact)} />
+      <JsonLd data={[websiteJsonLd(), organizationJsonLd(contact)]} />
       <Hero content={content} />
       {hasExclusive ? (
         <>
