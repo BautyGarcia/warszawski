@@ -58,48 +58,59 @@ export function ImageUploader({ value, onChange }: Props) {
     onChange(next);
   }
 
+  function updateAlt(idx: number, alt: string) {
+    onChange(value.map((img, i) => (i === idx ? { ...img, alt } : img)));
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {value.map((img, i) => (
-          <div
-            key={i}
-            className="group relative aspect-square overflow-hidden rounded-md bg-[#F0EDE8]"
-          >
-            <Image
-              src={img.url}
-              alt={img.alt ?? ""}
-              fill
-              sizes="200px"
-              className="object-cover"
-              unoptimized
-            />
-            {i === 0 ? (
-              <span className="absolute left-2 top-2 rounded-sm bg-gold px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white">
-                Principal
-              </span>
-            ) : null}
-            <div className="absolute inset-x-0 bottom-0 flex justify-between gap-1 p-2 opacity-0 transition-opacity group-hover:opacity-100">
-              {i !== 0 ? (
+          <div key={i} className="flex flex-col gap-2">
+            <div className="group relative aspect-square overflow-hidden rounded-md bg-[#F0EDE8]">
+              <Image
+                src={img.url}
+                alt={img.alt ?? ""}
+                fill
+                sizes="240px"
+                className="object-cover"
+                unoptimized
+              />
+              {i === 0 ? (
+                <span className="absolute left-2 top-2 rounded-sm bg-gold px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white">
+                  Principal
+                </span>
+              ) : null}
+              <div className="absolute inset-x-0 bottom-0 flex justify-between gap-1 p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                {i !== 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setPrimary(i)}
+                    className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ink shadow-sm hover:bg-white"
+                  >
+                    Hacer principal
+                  </button>
+                ) : (
+                  <span />
+                )}
                 <button
                   type="button"
-                  onClick={() => setPrimary(i)}
-                  className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ink shadow-sm hover:bg-white"
+                  onClick={() => remove(i)}
+                  aria-label="Quitar imagen"
+                  className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-[#DC3545] shadow-sm hover:bg-white"
                 >
-                  Hacer principal
+                  Quitar
                 </button>
-              ) : (
-                <span />
-              )}
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                aria-label="Quitar imagen"
-                className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-[#DC3545] shadow-sm hover:bg-white"
-              >
-                Quitar
-              </button>
+              </div>
             </div>
+            <input
+              type="text"
+              value={img.alt ?? ""}
+              onChange={(e) => updateAlt(i, e.target.value)}
+              placeholder="Texto alternativo (alt)"
+              aria-label={`Alt text de la imagen ${i + 1}`}
+              className="h-8 rounded-md border border-black/10 bg-[#F7F7F5] px-2 text-[12px] text-ink outline-none transition-colors placeholder:text-[#999] focus:border-ink/40 focus:bg-white"
+            />
           </div>
         ))}
 
@@ -108,7 +119,7 @@ export function ImageUploader({ value, onChange }: Props) {
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
           className={cn(
-            "flex aspect-square flex-col items-center justify-center gap-1 rounded-md border border-dashed border-black/15 bg-white text-sm text-[#6B6B6B] transition-colors hover:border-ink/30 hover:text-ink",
+            "flex aspect-square flex-col items-center justify-center gap-1 self-start rounded-md border border-dashed border-black/15 bg-white text-sm text-[#6B6B6B] transition-colors hover:border-ink/30 hover:text-ink",
             uploading && "opacity-60",
           )}
         >
@@ -130,6 +141,7 @@ export function ImageUploader({ value, onChange }: Props) {
       {error ? <p className="text-[12px] text-red-700">{error}</p> : null}
       <p className="text-[12px] text-[#6B6B6B]">
         JPG, PNG, WebP o AVIF. Máximo 5MB por imagen. La primera imagen es la principal.
+        El texto alternativo describe la imagen para buscadores y lectores de pantalla.
       </p>
     </div>
   );
