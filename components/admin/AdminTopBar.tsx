@@ -5,9 +5,13 @@ import { usePathname } from "next/navigation";
 import { logoutAction } from "@/actions/auth";
 import { cn } from "@/lib/utils";
 
+// TEMP: el tab "Editorial" esta escondido hasta confirmar con el cliente si
+// la seccion editorial/blog se va a usar. Las rutas /admin/editorial/* siguen
+// existiendo y funcionando si se entra por URL directa; solo se oculta del nav.
+// Para reactivar: agregar { label: "Editorial", href: "/admin/editorial" }
+// entre Productos y Contenido.
 const TABS = [
   { label: "Productos", href: "/admin/productos" },
-  { label: "Editorial", href: "/admin/editorial" },
   { label: "Contenido", href: "/admin/contenido" },
 ];
 
