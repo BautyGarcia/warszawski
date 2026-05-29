@@ -9,30 +9,11 @@ const NAV_LINKS = [
   { label: "Nosotros", href: "/nosotros" },
 ];
 
-/** "5491143215678" → "+54 9 11 4321-5678" */
-function formatPhone(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length < 8) return raw;
-  // Heuristica simple para AR: code pais + 9 + area + numero
-  if (digits.startsWith("549") && digits.length === 13) {
-    const area = digits.slice(3, 5);
-    const rest = digits.slice(5);
-    return `+54 9 ${area} ${rest.slice(0, 4)}-${rest.slice(4)}`;
-  }
-  if (digits.startsWith("54") && digits.length === 12) {
-    const area = digits.slice(2, 4);
-    const rest = digits.slice(4);
-    return `+54 ${area} ${rest.slice(0, 4)}-${rest.slice(4)}`;
-  }
-  return `+${digits}`;
-}
-
 export function SiteFooter({ contact }: { contact: ContactInfo }) {
-  const phones = contact.whatsappNumbers;
-  const addresses = contact.addresses;
   const hasSocial =
     contact.instagramUrl || contact.facebookUrl || contact.tiktokUrl;
-  const showContactCol = phones.length > 0 || hasSocial;
+  const showContactCol = !!contact.whatsappNumber || hasSocial;
+  const addresses = contact.addresses;
 
   return (
     <footer className="flex w-full flex-col gap-12 border-t border-bg/10 bg-ink px-6 py-12 md:flex-row md:items-start md:justify-between md:px-12 md:py-16 lg:px-20">
@@ -56,11 +37,11 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
 
         {showContactCol ? (
           <FooterColumn title="Contacto">
-            {phones.map((n, i) => (
-              <FooterLink key={`phone-${i}`} href={buildWhatsAppUrl(n)} external>
-                {phones.length > 1 ? formatPhone(n) : "WhatsApp"}
+            {contact.whatsappNumber ? (
+              <FooterLink href={buildWhatsAppUrl(contact.whatsappNumber)} external>
+                WhatsApp
               </FooterLink>
-            ))}
+            ) : null}
             {contact.instagramUrl ? (
               <FooterLink href={contact.instagramUrl} external>
                 Instagram
@@ -81,13 +62,20 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
 
         {addresses.length > 0 ? (
           <FooterColumn title={addresses.length > 1 ? "Oficinas" : "Oficina"}>
-            {addresses.map((a, i) => (
-              <span
-                key={`addr-${i}`}
-                className="max-w-[220px] whitespace-pre-line text-sm text-bg/60"
-              >
-                {a}
-              </span>
+            {addresses.map((office, i) => (
+              <div key={i} className="flex max-w-[220px] flex-col gap-0.5">
+                <span className="whitespace-pre-line text-sm text-bg/60">
+                  {office.address}
+                </span>
+                {office.phone ? (
+                  <Link
+                    href={`tel:${office.phone.replace(/\s/g, "")}`}
+                    className="text-[13px] text-bg/50 transition-colors hover:text-bg/80"
+                  >
+                    {office.phone}
+                  </Link>
+                ) : null}
+              </div>
             ))}
           </FooterColumn>
         ) : null}

@@ -2,22 +2,25 @@ import { cache } from "react";
 import { getContentMap } from "@/lib/content/fetch";
 import { normalizeExternalUrl } from "@/lib/url";
 
+export type OfficeAddress = {
+  /** Direccion postal completa. Ej: "Montevideo 536 1A, Capital Federal" */
+  address: string;
+  /** Telefono de linea opcional asociado a esta oficina. Vacio = no mostrar. */
+  phone: string;
+};
+
 export type ContactInfo = {
-  /** Primer numero de la lista (o env var fallback). Usado en CTAs. */
+  /** Numero de WhatsApp (uno solo). Usado en TODOS los CTAs del sitio. */
   whatsappNumber: string;
-  /** Lista completa de numeros. Renderizada en footer. */
-  whatsappNumbers: string[];
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
-  /** Primera direccion de la lista. Usada como principal en schema. */
-  address: string;
-  /** Lista completa de direcciones. Renderizada en footer + schema. */
-  addresses: string[];
+  /** Lista de oficinas. La primera es la principal en el schema SEO. */
+  addresses: OfficeAddress[];
 };
 
 /**
- * Parsea un valor de field_type "list" (JSON array stringificado) a array
+ * Parsea un valor de field_type "list" (JSON array de strings) a array
  * de strings, filtrando vacios. Devuelve [] ante cualquier error.
  */
 export function parseListValue(raw: string | undefined | null): string[] {
@@ -35,25 +38,62 @@ export function parseListValue(raw: string | undefined | null): string[] {
 }
 
 /**
+ * Parsea un valor de field_type "address_list" (JSON array de objetos
+ * {address, phone}) a OfficeAddress[]. Acepta defensivamente strings sueltos
+ * (backwards-compat con el formato anterior) y los wrappea.
+ */
+export function parseAddressListValue(
+  raw: string | undefined | null,
+): OfficeAddress[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item): OfficeAddress | null => {
+        if (typeof item === "string") {
+          const address = item.trim();
+          if (!address) return null;
+          return { address, phone: "" };
+        }
+        if (item && typeof item === "object") {
+          const address = String(
+            (item as Record<string, unknown>).address ?? "",
+          ).trim();
+          if (!address) return null;
+          const phone = String(
+            (item as Record<string, unknown>).phone ?? "",
+          ).trim();
+          return { address, phone };
+        }
+        return null;
+      })
+      .filter((it): it is OfficeAddress => it !== null);
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Lee los datos de contacto desde el contenido editable.
  * Cacheado por request con React `cache()` para deduplicar la query
  * cuando varios componentes server lo invocan en el mismo render.
+ *
+ * Fallback al env var `NEXT_PUBLIC_WHATSAPP_NUMBER` si la DB tiene el
+ * WhatsApp vacio — util hasta que el usuario lo configure desde el admin.
  */
 export const getContactInfo = cache(async (): Promise<ContactInfo> => {
   const content = await getContentMap("contact");
 
-  const whatsappNumbers = parseListValue(content["contact.whatsapp.numbers"]);
-  const addresses = parseListValue(content["contact.address.list"]);
-
   return {
     whatsappNumber:
-      whatsappNumbers[0] || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
-    whatsappNumbers,
+      content["contact.whatsapp.number"] ||
+      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
+      "",
     instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
     facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
     tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),
-    address: addresses[0] ?? "",
-    addresses,
+    addresses: parseAddressListValue(content["contact.address.list"]),
   };
 });
 

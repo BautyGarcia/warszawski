@@ -2,6 +2,7 @@
 
 import { ImageField } from "./ImageField";
 import { ListField } from "./ListField";
+import { AddressListField } from "./AddressListField";
 import type { ContentField as ContentFieldDef } from "@/lib/content/keys";
 
 const inputCls =
@@ -23,6 +24,8 @@ export function ContentField({ field, value, onChange }: Props) {
 
       {field.fieldType === "image" ? (
         <ImageField value={value} onChange={onChange} />
+      ) : field.fieldType === "address_list" ? (
+        <AddressListField value={value} onChange={onChange} />
       ) : field.fieldType === "list" ? (
         <ListField value={value} onChange={onChange} placeholder={field.placeholder} />
       ) : field.fieldType === "long_text" ? (

@@ -3,10 +3,12 @@ export type ContentField = {
   page: "home" | "about" | "contact";
   section: string;
   label: string;
-  fieldType: "short_text" | "long_text" | "url" | "image" | "list";
+  fieldType: "short_text" | "long_text" | "url" | "image" | "list" | "address_list";
   /**
    * Default value.
    * - Para fieldType "list" es un JSON array stringificado (ej: '["a","b"]').
+   * - Para fieldType "address_list" es JSON array de objetos
+   *   '[{"address":"...","phone":"..."}]'.
    * - Para el resto es el string crudo.
    */
   defaultValue: string;
@@ -270,14 +272,14 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
 
   // ── CONTACT / whatsapp ───────────────────────────────────
   {
-    key: "contact.whatsapp.numbers",
+    key: "contact.whatsapp.number",
     page: "contact",
     section: "whatsapp",
-    label: "Numeros de WhatsApp",
-    fieldType: "list",
-    defaultValue: "[]",
+    label: "Numero de WhatsApp",
+    fieldType: "short_text",
+    defaultValue: "",
     placeholder: "5491100000000",
-    hint: "Codigo de pais + numero, sin + ni espacios. Podes agregar varios — el primero se usa en los CTAs del sitio.",
+    hint: "Codigo de pais + numero, sin + ni espacios. Es uno solo — se usa en todos los CTAs del sitio.",
   },
 
   // ── CONTACT / social ─────────────────────────────────────
@@ -314,10 +316,10 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     key: "contact.address.list",
     page: "contact",
     section: "address",
-    label: "Direcciones de oficinas",
-    fieldType: "list",
-    defaultValue: '["Montevideo 536 1A, Capital Federal"]',
-    placeholder: "Calle 123 1A, Ciudad",
-    hint: "Podes agregar mas de una. La primera se considera la principal en el schema SEO.",
+    label: "Oficinas",
+    fieldType: "address_list",
+    defaultValue:
+      '[{"address":"Montevideo 536 1A, Capital Federal","phone":""}]',
+    hint: "Cada oficina tiene una direccion y un telefono de linea opcional. La primera oficina se considera la principal en el schema SEO.",
   },
 ];

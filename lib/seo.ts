@@ -85,42 +85,40 @@ export function organizationJsonLd(contact?: ContactInfo) {
     contact?.tiktokUrl,
   ].filter((u): u is string => !!u);
 
-  // contactPoints — uno por cada numero de WhatsApp configurado.
-  const contactPoints = (contact?.whatsappNumbers ?? [])
-    .map((n) => n.replace(/\D/g, ""))
-    .filter((digits) => digits.length > 0)
-    .map((digits) => ({
-      "@type": "ContactPoint" as const,
-      contactType: "sales",
-      areaServed: "AR",
-      availableLanguage: ["Spanish"],
-      url: `https://wa.me/${digits}`,
-    }));
-
-  // address principal + location[] con todas las oficinas.
-  const addressBlocks = (contact?.addresses ?? [])
-    .map((a) => parseAddressForSchema(a))
-    .filter((p) => p.streetAddress.length > 0);
-
-  const primaryAddress = addressBlocks[0]
+  // contactPoint top-level: WhatsApp (uno solo, fijo).
+  const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
+  const contactPoint = whatsappDigits
     ? {
-        "@type": "PostalAddress" as const,
-        streetAddress: addressBlocks[0].streetAddress,
-        addressLocality: addressBlocks[0].addressLocality,
-        addressCountry: addressBlocks[0].addressCountry,
+        "@type": "ContactPoint" as const,
+        contactType: "sales",
+        areaServed: "AR",
+        availableLanguage: ["Spanish"],
+        url: `https://wa.me/${whatsappDigits}`,
       }
     : null;
 
-  const locations = addressBlocks.map((a, i) => ({
-    "@type": "Place" as const,
-    name: i === 0 ? "Oficina principal" : `Oficina ${i + 1}`,
-    address: {
-      "@type": "PostalAddress" as const,
-      streetAddress: a.streetAddress,
-      addressLocality: a.addressLocality,
-      addressCountry: a.addressCountry,
-    },
-  }));
+  // Oficinas: cada una es un Place con su address + telephone opcional.
+  const validOffices = (contact?.addresses ?? []).filter(
+    (a) => a.address.length > 0,
+  );
+
+  const locations = validOffices.map((office, i) => {
+    const parsed = parseAddressForSchema(office.address);
+    return {
+      "@type": "Place" as const,
+      name: i === 0 ? "Oficina principal" : `Oficina ${i + 1}`,
+      address: {
+        "@type": "PostalAddress" as const,
+        streetAddress: parsed.streetAddress,
+        addressLocality: parsed.addressLocality,
+        addressCountry: parsed.addressCountry,
+      },
+      ...(office.phone ? { telephone: office.phone } : {}),
+    };
+  });
+
+  // address principal (top-level): la primera oficina.
+  const primaryAddress = locations[0]?.address ?? null;
 
   return {
     "@context": "https://schema.org",
@@ -136,7 +134,7 @@ export function organizationJsonLd(contact?: ContactInfo) {
     ...(locations.length > 1 ? { location: locations } : {}),
     ...(FOUNDING_YEAR ? { foundingDate: FOUNDING_YEAR } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
-    ...(contactPoints.length > 0 ? { contactPoint: contactPoints } : {}),
+    ...(contactPoint ? { contactPoint } : {}),
   };
 }
 
