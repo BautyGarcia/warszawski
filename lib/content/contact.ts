@@ -7,6 +7,7 @@ export type ContactInfo = {
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
+  address: string;
 };
 
 /**
@@ -27,5 +28,39 @@ export const getContactInfo = cache(async (): Promise<ContactInfo> => {
     instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
     facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
     tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),
+    address: (content["contact.address.full"] ?? "").trim(),
   };
 });
+
+/**
+ * Parse defensivo de la direccion para JSON-LD schema.org PostalAddress.
+ * El usuario edita un string libre; intentamos sacar locality del ultimo
+ * fragmento despues de coma, sino default Buenos Aires.
+ */
+export function parseAddressForSchema(full: string): {
+  streetAddress: string;
+  addressLocality: string;
+  addressCountry: string;
+} {
+  const trimmed = full.trim();
+  if (!trimmed) {
+    return {
+      streetAddress: "",
+      addressLocality: "Buenos Aires",
+      addressCountry: "AR",
+    };
+  }
+  const idx = trimmed.lastIndexOf(",");
+  if (idx === -1) {
+    return {
+      streetAddress: trimmed,
+      addressLocality: "Buenos Aires",
+      addressCountry: "AR",
+    };
+  }
+  return {
+    streetAddress: trimmed.slice(0, idx).trim(),
+    addressLocality: trimmed.slice(idx + 1).trim() || "Buenos Aires",
+    addressCountry: "AR",
+  };
+}

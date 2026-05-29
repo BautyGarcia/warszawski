@@ -19,6 +19,7 @@ const SECTION_LABELS: Record<string, string> = {
   values: "Valores",
   whatsapp: "WhatsApp",
   social: "Redes sociales",
+  address: "Direccion",
 };
 
 function groupBySection(fields: ContentFieldDef[]) {

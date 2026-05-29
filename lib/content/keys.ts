@@ -303,4 +303,16 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     defaultValue: "",
     placeholder: "https://tiktok.com/@warszawski",
   },
+
+  // ── CONTACT / address ────────────────────────────────────
+  {
+    key: "contact.address.full",
+    page: "contact",
+    section: "address",
+    label: "Direccion de la oficina",
+    fieldType: "short_text",
+    defaultValue: "Montevideo 536 1A, Capital Federal",
+    placeholder: "Calle 123 1A, Ciudad",
+    hint: "Aparece en el footer del sitio. Vacio = no se muestra.",
+  },
 ];

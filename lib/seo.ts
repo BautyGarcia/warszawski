@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { Product } from "@/types/product";
-import type { ContactInfo } from "@/lib/content/contact";
+import { type ContactInfo, parseAddressForSchema } from "@/lib/content/contact";
 
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://warszawski.com"
@@ -87,6 +87,16 @@ export function organizationJsonLd(contact?: ContactInfo) {
 
   const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
 
+  const parsedAddress = parseAddressForSchema(contact?.address ?? "");
+  const addressBlock = {
+    "@type": "PostalAddress" as const,
+    ...(parsedAddress.streetAddress
+      ? { streetAddress: parsedAddress.streetAddress }
+      : {}),
+    addressLocality: parsedAddress.addressLocality,
+    addressCountry: parsedAddress.addressCountry,
+  };
+
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -97,11 +107,7 @@ export function organizationJsonLd(contact?: ContactInfo) {
     description: BRAND_DESCRIPTION,
     slogan: "See Beyond",
     keywords: BRAND_KEYWORDS,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Buenos Aires",
-      addressCountry: "AR",
-    },
+    address: addressBlock,
     ...(FOUNDING_YEAR ? { foundingDate: FOUNDING_YEAR } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
     ...(whatsappDigits
