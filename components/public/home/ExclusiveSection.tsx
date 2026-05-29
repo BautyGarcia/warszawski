@@ -19,7 +19,7 @@ export function ExclusiveSection({
         title={content["home.exclusive.title"]}
         description={content["home.exclusive.description"]}
       />
-      {products.slice(0, 4).map((product, i) => (
+      {products.map((product, i) => (
         <ExclusiveBlock
           key={product.id}
           index={i + 1}

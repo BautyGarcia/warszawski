@@ -18,15 +18,14 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function listExclusiveProducts(): Promise<Product[]> {
-  if (!supabaseConfigured) return DEMO_PRODUCTS.filter((p) => p.is_exclusive).slice(0, 4);
+  if (!supabaseConfigured) return DEMO_PRODUCTS.filter((p) => p.is_exclusive);
   try {
     const sb = getSupabasePublic();
     const { data } = await sb
       .from("products")
       .select("*")
       .eq("is_exclusive", true)
-      .order("display_order")
-      .limit(4);
+      .order("display_order");
     return (data ?? []) as Product[];
   } catch {
     return [];
