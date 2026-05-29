@@ -22,10 +22,6 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
     contact.tiktokUrl ? { label: "TikTok", href: contact.tiktokUrl } : null,
   ].filter((x): x is { label: string; href: string } => x !== null);
 
-  const mapsUrl = contact.address
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address)}`
-    : null;
-
   return (
     <footer className="flex w-full flex-col gap-12 border-t border-bg/10 bg-ink px-6 py-12 md:flex-row md:items-start md:justify-between md:px-12 md:py-16 lg:px-20">
       <div className="flex flex-col gap-4">
@@ -56,20 +52,11 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
           </FooterColumn>
         ) : null}
 
-        {mapsUrl ? (
+        {contact.address ? (
           <FooterColumn title="Oficina">
-            <Link
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex max-w-[200px] flex-col gap-0.5 text-sm text-bg/60 transition-colors hover:text-bg"
-            >
-              <span className="whitespace-pre-line">{contact.address}</span>
-              <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.18em] text-gold/70 transition-colors group-hover:text-gold">
-                Ver en mapa
-                <span aria-hidden>→</span>
-              </span>
-            </Link>
+            <span className="max-w-[200px] whitespace-pre-line text-sm text-bg/60">
+              {contact.address}
+            </span>
           </FooterColumn>
         ) : null}
       </div>
