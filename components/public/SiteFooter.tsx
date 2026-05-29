@@ -9,18 +9,30 @@ const NAV_LINKS = [
   { label: "Nosotros", href: "/nosotros" },
 ];
 
+/** "5491143215678" → "+54 9 11 4321-5678" */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length < 8) return raw;
+  // Heuristica simple para AR: code pais + 9 + area + numero
+  if (digits.startsWith("549") && digits.length === 13) {
+    const area = digits.slice(3, 5);
+    const rest = digits.slice(5);
+    return `+54 9 ${area} ${rest.slice(0, 4)}-${rest.slice(4)}`;
+  }
+  if (digits.startsWith("54") && digits.length === 12) {
+    const area = digits.slice(2, 4);
+    const rest = digits.slice(4);
+    return `+54 ${area} ${rest.slice(0, 4)}-${rest.slice(4)}`;
+  }
+  return `+${digits}`;
+}
+
 export function SiteFooter({ contact }: { contact: ContactInfo }) {
-  const socials = [
-    contact.whatsappNumber
-      ? {
-          label: "WhatsApp",
-          href: buildWhatsAppUrl(contact.whatsappNumber),
-        }
-      : null,
-    contact.instagramUrl ? { label: "Instagram", href: contact.instagramUrl } : null,
-    contact.facebookUrl ? { label: "Facebook", href: contact.facebookUrl } : null,
-    contact.tiktokUrl ? { label: "TikTok", href: contact.tiktokUrl } : null,
-  ].filter((x): x is { label: string; href: string } => x !== null);
+  const phones = contact.whatsappNumbers;
+  const addresses = contact.addresses;
+  const hasSocial =
+    contact.instagramUrl || contact.facebookUrl || contact.tiktokUrl;
+  const showContactCol = phones.length > 0 || hasSocial;
 
   return (
     <footer className="flex w-full flex-col gap-12 border-t border-bg/10 bg-ink px-6 py-12 md:flex-row md:items-start md:justify-between md:px-12 md:py-16 lg:px-20">
@@ -42,21 +54,41 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
           ))}
         </FooterColumn>
 
-        {socials.length > 0 ? (
+        {showContactCol ? (
           <FooterColumn title="Contacto">
-            {socials.map((s) => (
-              <FooterLink key={s.label} href={s.href} external>
-                {s.label}
+            {phones.map((n, i) => (
+              <FooterLink key={`phone-${i}`} href={buildWhatsAppUrl(n)} external>
+                {phones.length > 1 ? formatPhone(n) : "WhatsApp"}
               </FooterLink>
             ))}
+            {contact.instagramUrl ? (
+              <FooterLink href={contact.instagramUrl} external>
+                Instagram
+              </FooterLink>
+            ) : null}
+            {contact.facebookUrl ? (
+              <FooterLink href={contact.facebookUrl} external>
+                Facebook
+              </FooterLink>
+            ) : null}
+            {contact.tiktokUrl ? (
+              <FooterLink href={contact.tiktokUrl} external>
+                TikTok
+              </FooterLink>
+            ) : null}
           </FooterColumn>
         ) : null}
 
-        {contact.address ? (
-          <FooterColumn title="Oficina">
-            <span className="max-w-[200px] whitespace-pre-line text-sm text-bg/60">
-              {contact.address}
-            </span>
+        {addresses.length > 0 ? (
+          <FooterColumn title={addresses.length > 1 ? "Oficinas" : "Oficina"}>
+            {addresses.map((a, i) => (
+              <span
+                key={`addr-${i}`}
+                className="max-w-[220px] whitespace-pre-line text-sm text-bg/60"
+              >
+                {a}
+              </span>
+            ))}
           </FooterColumn>
         ) : null}
       </div>

@@ -85,17 +85,42 @@ export function organizationJsonLd(contact?: ContactInfo) {
     contact?.tiktokUrl,
   ].filter((u): u is string => !!u);
 
-  const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
+  // contactPoints — uno por cada numero de WhatsApp configurado.
+  const contactPoints = (contact?.whatsappNumbers ?? [])
+    .map((n) => n.replace(/\D/g, ""))
+    .filter((digits) => digits.length > 0)
+    .map((digits) => ({
+      "@type": "ContactPoint" as const,
+      contactType: "sales",
+      areaServed: "AR",
+      availableLanguage: ["Spanish"],
+      url: `https://wa.me/${digits}`,
+    }));
 
-  const parsedAddress = parseAddressForSchema(contact?.address ?? "");
-  const addressBlock = {
-    "@type": "PostalAddress" as const,
-    ...(parsedAddress.streetAddress
-      ? { streetAddress: parsedAddress.streetAddress }
-      : {}),
-    addressLocality: parsedAddress.addressLocality,
-    addressCountry: parsedAddress.addressCountry,
-  };
+  // address principal + location[] con todas las oficinas.
+  const addressBlocks = (contact?.addresses ?? [])
+    .map((a) => parseAddressForSchema(a))
+    .filter((p) => p.streetAddress.length > 0);
+
+  const primaryAddress = addressBlocks[0]
+    ? {
+        "@type": "PostalAddress" as const,
+        streetAddress: addressBlocks[0].streetAddress,
+        addressLocality: addressBlocks[0].addressLocality,
+        addressCountry: addressBlocks[0].addressCountry,
+      }
+    : null;
+
+  const locations = addressBlocks.map((a, i) => ({
+    "@type": "Place" as const,
+    name: i === 0 ? "Oficina principal" : `Oficina ${i + 1}`,
+    address: {
+      "@type": "PostalAddress" as const,
+      streetAddress: a.streetAddress,
+      addressLocality: a.addressLocality,
+      addressCountry: a.addressCountry,
+    },
+  }));
 
   return {
     "@context": "https://schema.org",
@@ -107,20 +132,11 @@ export function organizationJsonLd(contact?: ContactInfo) {
     description: BRAND_DESCRIPTION,
     slogan: "See Beyond",
     keywords: BRAND_KEYWORDS,
-    address: addressBlock,
+    ...(primaryAddress ? { address: primaryAddress } : {}),
+    ...(locations.length > 1 ? { location: locations } : {}),
     ...(FOUNDING_YEAR ? { foundingDate: FOUNDING_YEAR } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
-    ...(whatsappDigits
-      ? {
-          contactPoint: {
-            "@type": "ContactPoint",
-            contactType: "sales",
-            areaServed: "AR",
-            availableLanguage: ["Spanish"],
-            url: `https://wa.me/${whatsappDigits}`,
-          },
-        }
-      : {}),
+    ...(contactPoints.length > 0 ? { contactPoint: contactPoints } : {}),
   };
 }
 

@@ -3,39 +3,64 @@ import { getContentMap } from "@/lib/content/fetch";
 import { normalizeExternalUrl } from "@/lib/url";
 
 export type ContactInfo = {
+  /** Primer numero de la lista (o env var fallback). Usado en CTAs. */
   whatsappNumber: string;
+  /** Lista completa de numeros. Renderizada en footer. */
+  whatsappNumbers: string[];
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
+  /** Primera direccion de la lista. Usada como principal en schema. */
   address: string;
+  /** Lista completa de direcciones. Renderizada en footer + schema. */
+  addresses: string[];
 };
+
+/**
+ * Parsea un valor de field_type "list" (JSON array stringificado) a array
+ * de strings, filtrando vacios. Devuelve [] ante cualquier error.
+ */
+export function parseListValue(raw: string | undefined | null): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((v) => (typeof v === "string" ? v : String(v)))
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0);
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Lee los datos de contacto desde el contenido editable.
  * Cacheado por request con React `cache()` para deduplicar la query
  * cuando varios componentes server lo invocan en el mismo render.
- *
- * Fallback al env var `NEXT_PUBLIC_WHATSAPP_NUMBER` si la DB tiene
- * el WhatsApp vacío — útil hasta que el usuario lo configure desde el admin.
  */
 export const getContactInfo = cache(async (): Promise<ContactInfo> => {
   const content = await getContentMap("contact");
+
+  const whatsappNumbers = parseListValue(content["contact.whatsapp.numbers"]);
+  const addresses = parseListValue(content["contact.address.list"]);
+
   return {
     whatsappNumber:
-      content["contact.whatsapp.number"] ||
-      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
-      "",
+      whatsappNumbers[0] || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
+    whatsappNumbers,
     instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
     facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
     tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),
-    address: (content["contact.address.full"] ?? "").trim(),
+    address: addresses[0] ?? "",
+    addresses,
   };
 });
 
 /**
- * Parse defensivo de la direccion para JSON-LD schema.org PostalAddress.
- * El usuario edita un string libre; intentamos sacar locality del ultimo
- * fragmento despues de coma, sino default Buenos Aires.
+ * Parse defensivo de una direccion individual para schema.org PostalAddress.
+ * Splitea por la ultima coma: street = antes, locality = despues.
+ * Si no hay coma, todo va a streetAddress y locality default a Buenos Aires.
  */
 export function parseAddressForSchema(full: string): {
   streetAddress: string;

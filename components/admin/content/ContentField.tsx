@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageField } from "./ImageField";
+import { ListField } from "./ListField";
 import type { ContentField as ContentFieldDef } from "@/lib/content/keys";
 
 const inputCls =
@@ -19,8 +20,11 @@ export function ContentField({ field, value, onChange }: Props) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-ink">{field.label}</span>
+
       {field.fieldType === "image" ? (
         <ImageField value={value} onChange={onChange} />
+      ) : field.fieldType === "list" ? (
+        <ListField value={value} onChange={onChange} placeholder={field.placeholder} />
       ) : field.fieldType === "long_text" ? (
         <textarea
           value={value}
@@ -38,6 +42,7 @@ export function ContentField({ field, value, onChange }: Props) {
           className={inputCls}
         />
       )}
+
       {field.hint ? (
         <span className="text-[12px] text-[#6B6B6B]">{field.hint}</span>
       ) : null}
