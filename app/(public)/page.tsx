@@ -23,6 +23,9 @@ export default async function HomePage() {
   ]);
 
   const hasExclusive = exclusiveProducts.length > 0;
+  // En la grilla "Nuestra Coleccion" excluimos los productos exclusivos
+  // porque ya tienen su propio bloque destacado arriba.
+  const regularProducts = allProducts.filter((p) => !p.is_exclusive);
 
   return (
     <main className="flex flex-col">
@@ -35,7 +38,7 @@ export default async function HomePage() {
         </>
       ) : null}
       <Divider />
-      <CollectionSection content={content} products={allProducts} />
+      <CollectionSection content={content} products={regularProducts} />
       <BrandStatement content={content} />
       <FinalCTA content={content} />
     </main>
