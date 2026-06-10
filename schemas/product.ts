@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const productColorSchema = z.object({
+  // Stable id linking images to colors. The admin form backfills it for legacy
+  // colors (ProductForm.toInput) and ColorTagInput sets it on new colors, so it
+  // is always present by the time the form is submitted.
+  id: z.string().min(1),
   name: z.string().min(1).max(40),
   hex: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Color inválido"),
 });
@@ -8,6 +12,8 @@ export const productColorSchema = z.object({
 export const productImageSchema = z.object({
   url: z.string().url(),
   alt: z.string().default(""),
+  // null/ausente = imagen "General" (compartida por todos los colores).
+  colorId: z.string().nullable().default(null),
 });
 
 export const productSchema = z.object({

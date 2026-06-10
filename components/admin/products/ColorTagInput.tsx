@@ -17,7 +17,7 @@ export function ColorTagInput({ value, onChange }: Props) {
     const trimmed = name.trim();
     if (!trimmed) return;
     if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return;
-    onChange([...value, { name: trimmed, hex }]);
+    onChange([...value, { id: crypto.randomUUID(), name: trimmed, hex }]);
     setName("");
     setHex("#0A0A0A");
   }
@@ -31,7 +31,7 @@ export function ColorTagInput({ value, onChange }: Props) {
       <div className="flex flex-wrap items-center gap-2">
         {value.map((c, i) => (
           <span
-            key={i}
+            key={c.id ?? i}
             className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-[#F7F7F5] py-1 pl-1 pr-2.5 text-[13px] text-ink"
           >
             <span

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/public/product/Breadcrumbs";
 import { ProductGallery } from "@/components/public/product/ProductGallery";
 import { ProductInfo } from "@/components/public/product/ProductInfo";
+import { ProductColorProvider } from "@/components/public/product/ProductColorContext";
 import { RelatedProducts } from "@/components/public/product/RelatedProducts";
 import { JsonLd } from "@/components/JsonLd";
 import { getProductBySlug, listProducts } from "@/lib/products/queries";
@@ -66,10 +67,14 @@ export default async function ProductPage({
           { label: product.name },
         ]}
       />
-      <ProductGallery
-        product={product}
-        infoSlot={<ProductInfo product={product} />}
-      />
+      <ProductColorProvider
+        initialColorId={product.available_colors[0]?.id ?? null}
+      >
+        <ProductGallery
+          product={product}
+          infoSlot={<ProductInfo product={product} />}
+        />
+      </ProductColorProvider>
       <RelatedProducts products={related} />
     </main>
   );

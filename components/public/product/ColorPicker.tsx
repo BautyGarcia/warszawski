@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useProductColor } from "./ProductColorContext";
 import type { ProductColor } from "@/types/product";
 
 export function ColorPicker({ colors }: { colors: ProductColor[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { selectedColorId, setSelectedColorId } = useProductColor();
   if (colors.length === 0) return null;
-  const active = colors[activeIndex];
+
+  const active =
+    colors.find((c) => c.id === selectedColorId) ?? colors[0];
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -17,14 +19,15 @@ export function ColorPicker({ colors }: { colors: ProductColor[] }) {
       <div className="flex items-center gap-2.5">
         {colors.map((c, i) => (
           <button
-            key={i}
+            key={c.id ?? c.hex + i}
             type="button"
-            onClick={() => setActiveIndex(i)}
+            onClick={() => setSelectedColorId(c.id)}
             aria-label={c.name}
+            aria-pressed={active.id === c.id}
             style={{ backgroundColor: c.hex }}
             className={cn(
               "size-8 shrink-0 rounded-full border-2 transition-colors",
-              activeIndex === i ? "border-gold" : "border-transparent",
+              active.id === c.id ? "border-gold" : "border-transparent",
             )}
           />
         ))}

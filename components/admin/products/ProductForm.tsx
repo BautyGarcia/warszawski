@@ -39,8 +39,13 @@ function toInput(p: Product): ProductFormValues {
     materials: p.materials ?? "",
     lens_type: p.lens_type,
     category: p.category,
-    available_colors: p.available_colors,
-    images: p.images,
+    // Backfill ids on colors saved before per-color images existed, so a save
+    // persists them and image assignments have a stable key to point at.
+    available_colors: p.available_colors.map((c) => ({
+      ...c,
+      id: c.id ?? crypto.randomUUID(),
+    })),
+    images: p.images.map((img) => ({ ...img, colorId: img.colorId ?? null })),
     is_exclusive: p.is_exclusive,
     seo_title: p.seo_title ?? "",
     seo_description: p.seo_description ?? "",
@@ -70,6 +75,7 @@ export function ProductForm(props: Props) {
 
   const name = watch("name");
   const slug = watch("slug");
+  const colors = watch("available_colors") ?? [];
 
   const onSubmit = handleSubmit((values) => {
     setSubmitError(null);
@@ -187,7 +193,11 @@ export function ProductForm(props: Props) {
           control={control}
           name="images"
           render={({ field }) => (
-            <ImageUploader value={field.value ?? []} onChange={field.onChange} />
+            <ImageUploader
+              value={field.value ?? []}
+              onChange={field.onChange}
+              colors={colors}
+            />
           )}
         />
       </FormSection>

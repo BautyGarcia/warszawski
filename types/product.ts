@@ -1,5 +1,5 @@
-export type ProductColor = { name: string; hex: string };
-export type ProductImage = { url: string; alt: string };
+export type ProductColor = { id: string; name: string; hex: string };
+export type ProductImage = { url: string; alt: string; colorId?: string | null };
 
 export type Product = {
   id: string;

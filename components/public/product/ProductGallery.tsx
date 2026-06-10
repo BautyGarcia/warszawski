@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Lightbox } from "./Lightbox";
+import { useProductColor } from "./ProductColorContext";
+import { visibleImagesForColor } from "@/lib/products/color-images";
 import type { Product } from "@/types/product";
 
 type Props = {
@@ -12,10 +14,26 @@ type Props = {
 };
 
 export function ProductGallery({ product, infoSlot }: Props) {
-  const images = product.images;
+  const { selectedColorId } = useProductColor();
+  const images = useMemo(
+    () =>
+      visibleImagesForColor(
+        product.images,
+        product.available_colors,
+        selectedColorId,
+      ),
+    [product.images, product.available_colors, selectedColorId],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const active = images[activeIndex];
+
+  // Switching color swaps the image set; jump back to the first image so the
+  // active index can never point past the (possibly shorter) new array.
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [selectedColorId]);
+
+  const active = images[activeIndex] ?? images[0];
   const thumbs = images.slice(0, 4);
   const canZoom = images.length > 0;
 
