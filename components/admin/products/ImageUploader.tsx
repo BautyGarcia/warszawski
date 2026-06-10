@@ -173,7 +173,11 @@ export function ImageUploader({ value, onChange, colors }: Props) {
 
         <Section
           title={hasColors ? "General" : undefined}
-          subtitle={hasColors ? "Se muestran en cualquier color" : undefined}
+          subtitle={
+            hasColors
+              ? "Respaldo: se muestran si un color no tiene fotos asignadas"
+              : undefined
+          }
           colorId={null}
           items={generalItems}
           {...sectionHandlers}
