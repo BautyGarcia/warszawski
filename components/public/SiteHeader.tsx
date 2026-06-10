@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { WhatsAppButton } from "./WhatsAppButton";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { CATEGORIES, CATEGORY_META } from "@/lib/category";
@@ -93,7 +93,7 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          aria-label="Abrir menu"
+          aria-label={open ? "Cerrar menu" : "Abrir menu"}
           aria-expanded={open}
           className="flex size-10 items-center justify-center md:hidden"
         >
@@ -121,47 +121,61 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
       </div>
 
       {open ? (
-        <nav className="flex flex-1 flex-col items-center justify-center gap-10 overflow-y-auto border-t border-line bg-bg px-6 py-12 text-center md:hidden">
-          {SITE_CONFIG.nav.public.map((item) =>
-            item.href === COLLECTION_HREF ? (
-              <div key={item.href} className="flex flex-col items-center gap-5">
+        <div className="flex flex-1 flex-col overflow-y-auto border-t border-line bg-bg md:hidden">
+          <nav className="flex flex-1 flex-col items-center justify-center gap-1 px-6 py-12">
+            {SITE_CONFIG.nav.public.map((item, index) =>
+              item.href === COLLECTION_HREF ? (
+                <div
+                  key={item.href}
+                  style={{ animationDelay: `${100 + index * 90}ms` }}
+                  className="flex flex-col items-center gap-5 py-5 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both motion-safe:duration-500 motion-safe:ease-out"
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="font-display text-[2.125rem] leading-none tracking-[-0.01em] text-ink transition-colors duration-200 active:text-gold-dark"
+                  >
+                    {item.label}
+                  </Link>
+                  <div className="flex items-center gap-4">
+                    {CATEGORIES.map((category, categoryIndex) => (
+                      <Fragment key={category}>
+                        {categoryIndex > 0 ? (
+                          <span aria-hidden className="h-3.5 w-px bg-line" />
+                        ) : null}
+                        <Link
+                          href={`/coleccion/${category}`}
+                          onClick={() => setOpen(false)}
+                          className="px-1 py-1 text-xs uppercase tracking-[0.18em] text-gold-dark transition-colors duration-200 active:text-ink"
+                        >
+                          {CATEGORY_META[category].label}
+                        </Link>
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+              ) : (
                 <Link
+                  key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="text-2xl uppercase tracking-[0.12em] text-ink"
+                  style={{ animationDelay: `${100 + index * 90}ms` }}
+                  className="py-5 font-display text-[2.125rem] leading-none tracking-[-0.01em] text-ink transition-colors duration-200 active:text-gold-dark motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:fill-mode-both motion-safe:duration-500 motion-safe:ease-out"
                 >
                   {item.label}
                 </Link>
-                <div className="flex flex-col items-center gap-4">
-                  {CATEGORIES.map((category) => (
-                    <Link
-                      key={category}
-                      href={`/coleccion/${category}`}
-                      onClick={() => setOpen(false)}
-                      className="text-base uppercase tracking-[0.16em] text-ink-soft"
-                    >
-                      {CATEGORY_META[category].label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="text-2xl uppercase tracking-[0.12em] text-ink"
-              >
-                {item.label}
-              </Link>
-            ),
-          )}
+              ),
+            )}
+          </nav>
+
           {whatsappNumber ? (
-            <WhatsAppButton number={whatsappNumber} size="lg" className="mt-4">
-              WhatsApp
-            </WhatsAppButton>
+            <div className="border-t border-line px-6 pb-10 pt-7 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:fill-mode-both motion-safe:duration-700 motion-safe:[animation-delay:300ms]">
+              <WhatsAppButton number={whatsappNumber} size="lg" className="w-full">
+                WhatsApp
+              </WhatsAppButton>
+            </div>
           ) : null}
-        </nav>
+        </div>
       ) : null}
     </header>
   );
