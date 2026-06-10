@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Lightbox } from "./Lightbox";
 import { useProductColor } from "./ProductColorContext";
@@ -26,6 +26,8 @@ export function ProductGallery({ product, infoSlot }: Props) {
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
 
   // Switching color swaps the image set; jump back to the first image so the
   // active index can never point past the (possibly shorter) new array.
@@ -34,12 +36,44 @@ export function ProductGallery({ product, infoSlot }: Props) {
   }, [selectedColorId]);
 
   const active = images[activeIndex] ?? images[0];
-  const thumbs = images.slice(0, 4);
   const canZoom = images.length > 0;
+  const hasThumbs = images.length > 1;
+
+  // Track scroll position so the edge fades only show when there's more to see.
+  const updateEdges = useCallback(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setEdges({
+      left: scrollLeft > 1,
+      right: scrollLeft + clientWidth < scrollWidth - 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    updateEdges();
+    el.addEventListener("scroll", updateEdges, { passive: true });
+    const ro = new ResizeObserver(updateEdges);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", updateEdges);
+      ro.disconnect();
+    };
+  }, [updateEdges, images.length]);
+
+  // Keep the active thumbnail in view (e.g. after color switch or lightbox nav).
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    const node = el.querySelector<HTMLElement>('[data-active="true"]');
+    node?.scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
+  }, [activeIndex]);
 
   return (
     <section className="flex w-full flex-col gap-8 bg-bg px-6 pt-6 md:gap-12 md:px-12 lg:flex-row lg:items-start lg:gap-12 lg:px-20">
-      <div className="flex w-full flex-col gap-3 md:gap-4 lg:flex-1">
+      <div className="flex w-full min-w-0 flex-col gap-3 md:gap-4 lg:flex-1">
         {canZoom ? (
           <button
             type="button"
@@ -73,32 +107,52 @@ export function ProductGallery({ product, infoSlot }: Props) {
           </div>
         )}
 
-        {thumbs.length > 1 ? (
-          <div className="flex gap-3 md:gap-4">
-            {thumbs.map((img, i) => {
-              const isActive = i === activeIndex;
-              return (
-                <button
-                  key={img.url + i}
-                  type="button"
-                  onClick={() => setActiveIndex(i)}
-                  aria-label={`Imagen ${i + 1}`}
-                  aria-pressed={isActive}
-                  className={cn(
-                    "relative aspect-[3/2] w-28 shrink-0 overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors md:w-32",
-                    isActive ? "border-gold" : "border-transparent hover:border-line",
-                  )}
-                >
-                  <Image
-                    src={img.url}
-                    alt={img.alt || `${product.name} — imagen ${i + 1}`}
-                    fill
-                    sizes="128px"
-                    className="object-cover"
-                  />
-                </button>
-              );
-            })}
+        {hasThumbs ? (
+          <div className="relative">
+            <div
+              ref={stripRef}
+              className="flex snap-x gap-3 overflow-x-auto scroll-smooth pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-4 [&::-webkit-scrollbar]:hidden"
+            >
+              {images.map((img, i) => {
+                const isActive = i === activeIndex;
+                return (
+                  <button
+                    key={img.url + i}
+                    type="button"
+                    data-active={isActive}
+                    onClick={() => setActiveIndex(i)}
+                    aria-label={`Imagen ${i + 1} de ${images.length}`}
+                    aria-pressed={isActive}
+                    className={cn(
+                      "relative aspect-[3/2] w-24 shrink-0 snap-start overflow-hidden rounded-sm border-2 bg-bg-warm transition-colors sm:w-28 md:w-32",
+                      isActive ? "border-gold" : "border-transparent hover:border-line",
+                    )}
+                  >
+                    <Image
+                      src={img.url}
+                      alt={img.alt || `${product.name} — imagen ${i + 1}`}
+                      fill
+                      sizes="128px"
+                      className="object-cover"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+            <div
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-bg to-transparent transition-opacity duration-300",
+                edges.left ? "opacity-100" : "opacity-0",
+              )}
+            />
+            <div
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-bg to-transparent transition-opacity duration-300",
+                edges.right ? "opacity-100" : "opacity-0",
+              )}
+            />
           </div>
         ) : null}
       </div>
