@@ -20,12 +20,23 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
   return (
     <header
       className={cn(
         "sticky top-0 z-40 w-full bg-bg/95 backdrop-blur transition-[border-color,box-shadow] duration-300 ease-out",
         "border-b border-transparent",
         scrolled && "border-line",
+        open &&
+          "max-md:fixed max-md:inset-0 max-md:z-50 max-md:flex max-md:flex-col max-md:border-b-0 max-md:bg-bg max-md:backdrop-blur-none",
       )}
     >
       <div className="flex items-center justify-between px-6 py-6 md:px-12 md:py-7 lg:px-20 lg:py-8">
@@ -110,7 +121,7 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
       </div>
 
       {open ? (
-        <nav className="flex flex-col gap-4 border-t border-line bg-bg px-6 py-6 md:hidden">
+        <nav className="flex flex-1 flex-col gap-4 overflow-y-auto border-t border-line bg-bg px-6 py-6 md:hidden">
           {SITE_CONFIG.nav.public.map((item) =>
             item.href === COLLECTION_HREF ? (
               <div key={item.href} className="flex flex-col gap-3">
