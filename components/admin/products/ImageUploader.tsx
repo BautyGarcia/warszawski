@@ -2,6 +2,24 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { GripVertical } from "lucide-react";
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import type { ProductColor } from "@/types/product";
 
@@ -16,6 +34,7 @@ type Props = {
 };
 
 const ACCEPT = "image/jpeg,image/png,image/webp,image/avif";
+const GENERAL_GROUP = "__general__";
 
 export function ImageUploader({ value, onChange, colors }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +44,19 @@ export function ImageUploader({ value, onChange, colors }: Props) {
 
   const validIds = new Set(colors.map((c) => c.id));
   const hasColors = colors.length > 0;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  function isGeneral(img: ImageItem): boolean {
+    return img.colorId == null || !validIds.has(img.colorId);
+  }
+
+  function groupKeyOf(img: ImageItem): string {
+    return isGeneral(img) ? GENERAL_GROUP : (img.colorId as string);
+  }
 
   async function handleFiles(files: FileList | null, colorId: string | null) {
     if (!files || files.length === 0) return;
@@ -73,24 +105,37 @@ export function ImageUploader({ value, onChange, colors }: Props) {
     onChange(value.map((img, i) => (i === index ? { ...img, colorId } : img)));
   }
 
-  // Move an image to the front of its own group (its color's "principal"),
-  // keeping the relative order of everything else intact.
-  function makePrimary(index: number) {
-    const target = value[index];
-    const inGeneral = isGeneral(target);
-    const rest = value.filter((_, i) => i !== index);
-    const sameGroup = (img: ImageItem) =>
-      inGeneral ? isGeneral(img) : img.colorId === target.colorId;
-    const insertAt = rest.findIndex(sameGroup);
-    const next =
-      insertAt === -1
-        ? [target, ...rest]
-        : [...rest.slice(0, insertAt), target, ...rest.slice(insertAt)];
-    onChange(next);
-  }
+  // Reorder within a single group (color or general). The reordered images are
+  // written back into the same global slots the group occupied, so the other
+  // groups keep their positions untouched. Cross-group drags are ignored.
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-  function isGeneral(img: ImageItem): boolean {
-    return img.colorId == null || !validIds.has(img.colorId);
+    const activeUrl = String(active.id);
+    const overUrl = String(over.id);
+    const activeImg = value.find((im) => im.url === activeUrl);
+    const overImg = value.find((im) => im.url === overUrl);
+    if (!activeImg || !overImg) return;
+    if (groupKeyOf(activeImg) !== groupKeyOf(overImg)) return;
+
+    const group = groupKeyOf(activeImg);
+    const groupIndices = value
+      .map((img, i) => ({ img, i }))
+      .filter((e) => groupKeyOf(e.img) === group)
+      .map((e) => e.i);
+    const groupImages = groupIndices.map((i) => value[i]);
+
+    const from = groupImages.findIndex((im) => im.url === activeUrl);
+    const to = groupImages.findIndex((im) => im.url === overUrl);
+    if (from === -1 || to === -1) return;
+
+    const reordered = arrayMove(groupImages, from, to);
+    const next = [...value];
+    groupIndices.forEach((globalIdx, k) => {
+      next[globalIdx] = reordered[k];
+    });
+    onChange(next);
   }
 
   const indexed: IndexedItem[] = value.map((img, index) => ({ img, index }));
@@ -104,51 +149,57 @@ export function ImageUploader({ value, onChange, colors }: Props) {
     onRemove: remove,
     onUpdateAlt: updateAlt,
     onReassign: reassign,
-    onMakePrimary: makePrimary,
   };
 
   return (
-    <div className="flex flex-col gap-7">
-      {hasColors
-        ? colors.map((color) => (
-            <Section
-              key={color.id}
-              title={color.name}
-              swatch={color.hex}
-              colorId={color.id}
-              items={indexed.filter((e) => e.img.colorId === color.id)}
-              {...sectionHandlers}
-            />
-          ))
-        : null}
-
-      <Section
-        title={hasColors ? "General" : undefined}
-        subtitle={hasColors ? "Se muestran en cualquier color" : undefined}
-        colorId={null}
-        items={generalItems}
-        {...sectionHandlers}
-      />
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept={ACCEPT}
-        multiple
-        className="hidden"
-        onChange={(e) => handleFiles(e.target.files, pendingColorId.current)}
-      />
-
-      {error ? <p className="text-[12px] text-red-700">{error}</p> : null}
-      <p className="text-[12px] text-[#6B6B6B]">
-        JPG, PNG, WebP o AVIF. Máximo 5MB por imagen. La primera imagen de cada
-        color es la principal de ese color.
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="flex flex-col gap-7">
         {hasColors
-          ? " Las imágenes en “General” se usan como respaldo cuando un color no tiene fotos propias."
-          : null}{" "}
-        El texto alternativo describe la imagen para buscadores y lectores de pantalla.
-      </p>
-    </div>
+          ? colors.map((color) => (
+              <Section
+                key={color.id}
+                title={color.name}
+                swatch={color.hex}
+                colorId={color.id}
+                items={indexed.filter((e) => e.img.colorId === color.id)}
+                {...sectionHandlers}
+              />
+            ))
+          : null}
+
+        <Section
+          title={hasColors ? "General" : undefined}
+          subtitle={hasColors ? "Se muestran en cualquier color" : undefined}
+          colorId={null}
+          items={generalItems}
+          {...sectionHandlers}
+        />
+
+        <input
+          ref={inputRef}
+          type="file"
+          accept={ACCEPT}
+          multiple
+          className="hidden"
+          onChange={(e) => handleFiles(e.target.files, pendingColorId.current)}
+        />
+
+        {error ? <p className="text-[12px] text-red-700">{error}</p> : null}
+        <p className="text-[12px] text-[#6B6B6B]">
+          JPG, PNG, WebP o AVIF. Máximo 5MB por imagen. Arrastrá las fotos desde
+          el ícono para cambiar el orden; la primera de cada color es la
+          principal.
+          {hasColors
+            ? " Las imágenes en “General” se usan como respaldo cuando un color no tiene fotos propias."
+            : null}{" "}
+          El texto alternativo describe la imagen para buscadores y lectores de pantalla.
+        </p>
+      </div>
+    </DndContext>
   );
 }
 
@@ -165,7 +216,6 @@ type SectionProps = {
   onRemove: (index: number) => void;
   onUpdateAlt: (index: number, alt: string) => void;
   onReassign: (index: number, colorId: string | null) => void;
-  onMakePrimary: (index: number) => void;
 };
 
 function Section({
@@ -181,9 +231,9 @@ function Section({
   onRemove,
   onUpdateAlt,
   onReassign,
-  onMakePrimary,
 }: SectionProps) {
   const primaryIndex = items[0]?.index;
+  const ids = items.map((e) => e.img.url);
 
   return (
     <div className="flex flex-col gap-3">
@@ -205,19 +255,20 @@ function Section({
       ) : null}
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {items.map((entry) => (
-          <Thumb
-            key={entry.index}
-            entry={entry}
-            isPrimary={entry.index === primaryIndex}
-            colors={colors}
-            showReassign={showReassign}
-            onRemove={onRemove}
-            onUpdateAlt={onUpdateAlt}
-            onReassign={onReassign}
-            onMakePrimary={onMakePrimary}
-          />
-        ))}
+        <SortableContext items={ids} strategy={rectSortingStrategy}>
+          {items.map((entry) => (
+            <Thumb
+              key={entry.img.url}
+              entry={entry}
+              isPrimary={entry.index === primaryIndex}
+              colors={colors}
+              showReassign={showReassign}
+              onRemove={onRemove}
+              onUpdateAlt={onUpdateAlt}
+              onReassign={onReassign}
+            />
+          ))}
+        </SortableContext>
 
         <button
           type="button"
@@ -247,7 +298,6 @@ type ThumbProps = {
   onRemove: (index: number) => void;
   onUpdateAlt: (index: number, alt: string) => void;
   onReassign: (index: number, colorId: string | null) => void;
-  onMakePrimary: (index: number) => void;
 };
 
 function Thumb({
@@ -258,17 +308,41 @@ function Thumb({
   onRemove,
   onUpdateAlt,
   onReassign,
-  onMakePrimary,
 }: ThumbProps) {
   const { img, index } = entry;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: img.url });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   // Orphan: assigned to a color that no longer exists → reads as unassigned.
   const selectValue = colors.some((c) => c.id === img.colorId)
     ? (img.colorId as string)
     : "";
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="group relative aspect-square overflow-hidden rounded-md bg-[#F0EDE8]">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn("flex flex-col gap-2", isDragging && "z-20 opacity-80")}
+    >
+      {/* The whole photo is the drag surface; inner controls stop propagation
+          so they stay clickable and don't start a drag. */}
+      <div
+        className="group relative aspect-square cursor-grab touch-none overflow-hidden rounded-md bg-[#F0EDE8] active:cursor-grabbing"
+        aria-label="Arrastrar para reordenar"
+        {...attributes}
+        {...listeners}
+      >
         <Image
           src={img.url}
           alt={img.alt ?? ""}
@@ -276,27 +350,24 @@ function Thumb({
           sizes="240px"
           className="object-cover"
           unoptimized
+          draggable={false}
         />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-2 top-2 flex size-7 items-center justify-center rounded-sm bg-white/85 text-ink/70 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+        >
+          <GripVertical size={15} />
+        </span>
         {isPrimary ? (
           <span className="absolute left-2 top-2 rounded-sm bg-gold px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white">
             Principal
           </span>
         ) : null}
-        <div className="absolute inset-x-0 bottom-0 flex justify-between gap-1 p-2 opacity-0 transition-opacity group-hover:opacity-100">
-          {!isPrimary ? (
-            <button
-              type="button"
-              onClick={() => onMakePrimary(index)}
-              className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ink shadow-sm hover:bg-white"
-            >
-              Hacer principal
-            </button>
-          ) : (
-            <span />
-          )}
+        <div className="absolute inset-x-0 bottom-0 flex justify-end p-2 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
             onClick={() => onRemove(index)}
+            onPointerDown={(e) => e.stopPropagation()}
             aria-label="Quitar imagen"
             className="rounded-sm bg-white/90 px-2 py-0.5 text-[11px] font-medium text-[#DC3545] shadow-sm hover:bg-white"
           >
