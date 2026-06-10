@@ -121,24 +121,24 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
       </div>
 
       {open ? (
-        <nav className="flex flex-1 flex-col gap-4 overflow-y-auto border-t border-line bg-bg px-6 py-6 md:hidden">
+        <nav className="flex flex-1 flex-col items-center justify-center gap-10 overflow-y-auto border-t border-line bg-bg px-6 py-12 text-center md:hidden">
           {SITE_CONFIG.nav.public.map((item) =>
             item.href === COLLECTION_HREF ? (
-              <div key={item.href} className="flex flex-col gap-3">
+              <div key={item.href} className="flex flex-col items-center gap-5">
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="text-sm uppercase tracking-[0.08em] text-ink"
+                  className="text-2xl uppercase tracking-[0.12em] text-ink"
                 >
                   {item.label}
                 </Link>
-                <div className="flex flex-col gap-3 border-l border-line pl-4">
+                <div className="flex flex-col items-center gap-4">
                   {CATEGORIES.map((category) => (
                     <Link
                       key={category}
                       href={`/coleccion/${category}`}
                       onClick={() => setOpen(false)}
-                      className="text-[13px] uppercase tracking-[0.08em] text-ink-soft"
+                      className="text-base uppercase tracking-[0.16em] text-ink-soft"
                     >
                       {CATEGORY_META[category].label}
                     </Link>
@@ -150,14 +150,14 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="text-sm uppercase tracking-[0.08em] text-ink"
+                className="text-2xl uppercase tracking-[0.12em] text-ink"
               >
                 {item.label}
               </Link>
             ),
           )}
           {whatsappNumber ? (
-            <WhatsAppButton number={whatsappNumber} size="sm" className="mt-2 w-fit">
+            <WhatsAppButton number={whatsappNumber} size="lg" className="mt-4">
               WhatsApp
             </WhatsAppButton>
           ) : null}
