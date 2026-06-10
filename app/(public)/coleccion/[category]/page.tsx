@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { listProductsByCategory } from "@/lib/products/queries";
 import { getContentMap } from "@/lib/content/fetch";
 import { getContactInfo } from "@/lib/content/contact";
-import { CATEGORIES, CATEGORY_META, isCategory } from "@/lib/category";
+import { CATEGORIES, getCategoryMeta, isCategory } from "@/lib/category";
 import {
   SITE_URL,
   breadcrumbJsonLd,
@@ -26,7 +26,8 @@ export async function generateMetadata({
 }) {
   const { category } = await params;
   if (!isCategory(category)) return { title: "No encontrado" };
-  const meta = CATEGORY_META[category];
+  const content = await getContentMap("home");
+  const meta = getCategoryMeta(category, content);
   const url = `${SITE_URL}/coleccion/${category}`;
   return {
     title: meta.metaTitle,
@@ -55,7 +56,7 @@ export default async function CategoryPage({
     getContactInfo(),
   ]);
 
-  const meta = CATEGORY_META[category];
+  const meta = getCategoryMeta(category, content);
   const url = `${SITE_URL}/coleccion/${category}`;
 
   return (

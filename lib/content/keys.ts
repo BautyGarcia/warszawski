@@ -1,3 +1,5 @@
+import { CATEGORY_META } from "@/lib/category";
+
 export type ContentField = {
   key: string;
   page: "home" | "about" | "contact";
@@ -141,6 +143,42 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     fieldType: "long_text",
     defaultValue:
       "Somos mayoristas. Oportunidades para grandes compradores con amplisimos stocks y colores variados en todas nuestras lineas.",
+  },
+
+  // ── HOME / categorias (headers de /coleccion/[category]) ──
+  {
+    key: "categories.sol.title",
+    page: "home",
+    section: "categories",
+    label: "Anteojos de sol — Titulo",
+    fieldType: "short_text",
+    defaultValue: CATEGORY_META.sol.title,
+    hint: "Titulo del header de la pagina /coleccion/sol (y SEO).",
+  },
+  {
+    key: "categories.sol.description",
+    page: "home",
+    section: "categories",
+    label: "Anteojos de sol — Descripcion",
+    fieldType: "long_text",
+    defaultValue: CATEGORY_META.sol.description,
+  },
+  {
+    key: "categories.recetados.title",
+    page: "home",
+    section: "categories",
+    label: "Anteojos recetados — Titulo",
+    fieldType: "short_text",
+    defaultValue: CATEGORY_META.recetados.title,
+    hint: "Titulo del header de la pagina /coleccion/recetados (y SEO).",
+  },
+  {
+    key: "categories.recetados.description",
+    page: "home",
+    section: "categories",
+    label: "Anteojos recetados — Descripcion",
+    fieldType: "long_text",
+    defaultValue: CATEGORY_META.recetados.description,
   },
 
   // ── ABOUT / hero ─────────────────────────────────────────

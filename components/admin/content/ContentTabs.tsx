@@ -15,6 +15,7 @@ const SECTION_LABELS: Record<string, string> = {
   collection: "Colección",
   brand: "Brand Statement",
   cta: "CTA Final",
+  categories: "Categorías",
   origin: "Historia de Origen",
   values: "Valores",
   whatsapp: "WhatsApp",

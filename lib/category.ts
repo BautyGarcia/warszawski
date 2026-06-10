@@ -25,3 +25,21 @@ export const CATEGORY_META: Record<
 export function isCategory(value: string): value is Category {
   return (CATEGORIES as ReadonlyArray<string>).includes(value);
 }
+
+/**
+ * Resolve a category's display meta, preferring values edited from the
+ * backoffice (site_content, keys `categories.<cat>.title|description`) and
+ * falling back to the hardcoded CATEGORY_META defaults. `label` stays static
+ * (used by nav/breadcrumbs); `metaTitle` follows the edited title for SEO.
+ * Takes a ContentMap so it stays free of data-layer imports (no import cycle).
+ */
+export function getCategoryMeta(
+  category: Category,
+  content: Record<string, string>,
+) {
+  const base = CATEGORY_META[category];
+  const title = content[`categories.${category}.title`]?.trim() || base.title;
+  const description =
+    content[`categories.${category}.description`]?.trim() || base.description;
+  return { label: base.label, title, description, metaTitle: title };
+}
