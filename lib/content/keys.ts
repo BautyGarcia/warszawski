@@ -117,6 +117,15 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
       "Interesantes ofertas en modelos de temporadas pasadas. Colores variados y amplisimo stock disponible para grandes compradores.",
   },
   {
+    key: "home.brand.highlight",
+    page: "home",
+    section: "brand",
+    label: "Frase destacada",
+    fieldType: "long_text",
+    defaultValue: "",
+    hint: "Parrafo aparte, un poco mas grande, debajo del texto principal. Dejar vacio para no mostrarlo.",
+  },
+  {
     key: "home.brand.secondary",
     page: "home",
     section: "brand",

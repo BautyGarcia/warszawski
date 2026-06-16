@@ -92,12 +92,12 @@ export default async function CategoryPage({
           </span>
         </Reveal>
         <Reveal immediate delay={140}>
-          <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-black leading-[1.05] tracking-[-0.02em] text-ink">
+          <h1 className="text-balance font-display text-[clamp(2.5rem,8vw,4.5rem)] font-black leading-[1.05] tracking-[-0.02em] text-ink">
             {meta.title}
           </h1>
         </Reveal>
         <Reveal immediate delay={280}>
-          <p className="mt-6 max-w-[560px] text-sm font-light leading-7 text-ink-soft md:mt-8 md:text-base md:leading-8">
+          <p className="mt-6 max-w-[560px] text-pretty text-sm font-light leading-7 text-ink-soft md:mt-8 md:text-base md:leading-8">
             {meta.description}
           </p>
         </Reveal>

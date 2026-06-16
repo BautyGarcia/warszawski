@@ -9,7 +9,7 @@ export async function Hero({ content }: { content: ContentMap }) {
   return (
     <section className="flex min-h-screen w-full shrink-0 flex-col items-center justify-center bg-bg px-6 py-24 md:px-12 md:py-32 lg:px-20">
       <Reveal immediate delay={0}>
-        <span className="block max-w-[480px] text-center text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:text-[11px]">
+        <span className="block max-w-[480px] text-balance text-center text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:text-[11px]">
           {content["home.hero.label"]}
         </span>
       </Reveal>
@@ -21,7 +21,7 @@ export async function Hero({ content }: { content: ContentMap }) {
       </Reveal>
 
       <Reveal immediate delay={260} className="mt-6 md:mt-8">
-        <p className="max-w-[480px] text-center text-base font-light leading-7 text-ink-soft md:text-xl md:leading-8">
+        <p className="max-w-[480px] text-balance text-center text-base font-light leading-7 text-ink-soft md:text-xl md:leading-8">
           {content["home.hero.subtitle"]}
         </p>
       </Reveal>
