@@ -328,6 +328,16 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     placeholder: "5491100000000",
     hint: "Codigo de pais + numero, sin + ni espacios. Es uno solo — se usa en todos los CTAs del sitio.",
   },
+  {
+    key: "contact.whatsapp.maps",
+    page: "contact",
+    section: "whatsapp",
+    label: "Link de Google Maps (showroom)",
+    fieldType: "url",
+    defaultValue:
+      "https://www.google.com/maps/place/Montevideo+536,+C1019ABL+Cdad.+Aut%C3%B3noma+de+Buenos+Aires/@-34.6025739,-58.389679,16z/data=!3m1!4b1!4m6!3m5!1s0x95bccac1265e5245:0xe109fa22d96fdd68!8m2!3d-34.6025739!4d-58.389679!16s%2Fg%2F11q2x8287_?entry=ttu",
+    hint: "Pega el enlace de Google Maps de la direccion. Alimenta el boton 'Visite nuestro showroom' del inicio. Dejar vacio para ocultarlo.",
+  },
 
   // ── CONTACT / social ─────────────────────────────────────
   {

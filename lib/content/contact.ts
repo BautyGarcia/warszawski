@@ -12,6 +12,8 @@ export type OfficeAddress = {
 export type ContactInfo = {
   /** Numero de WhatsApp (uno solo). Usado en TODOS los CTAs del sitio. */
   whatsappNumber: string;
+  /** Link de Google Maps del showroom. Vacio = no mostrar el boton. */
+  mapsUrl: string;
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
@@ -90,6 +92,7 @@ export const getContactInfo = cache(async (): Promise<ContactInfo> => {
       content["contact.whatsapp.number"] ||
       process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
       "",
+    mapsUrl: normalizeExternalUrl(content["contact.whatsapp.maps"]),
     instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
     facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
     tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),
