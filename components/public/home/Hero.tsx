@@ -42,7 +42,7 @@ export async function Hero({ content }: { content: ContentMap }) {
           className={whatsappNumber ? "mt-4" : "mt-10 md:mt-14"}
         >
           <ShowroomButton href={mapsUrl} size="md">
-            Visite nuestro showroom
+            {content["home.hero.showroomcta"]}
           </ShowroomButton>
         </Reveal>
       ) : null}

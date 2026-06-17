@@ -45,6 +45,15 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     defaultValue: "Escribinos por WhatsApp",
   },
   {
+    key: "home.hero.showroomcta",
+    page: "home",
+    section: "hero",
+    label: "Texto boton showroom",
+    fieldType: "short_text",
+    defaultValue: "Visite nuestro showroom",
+    hint: "Boton que abre el link de Google Maps. El link se carga en Contacto > WhatsApp.",
+  },
+  {
     key: "home.hero.subcta",
     page: "home",
     section: "hero",
