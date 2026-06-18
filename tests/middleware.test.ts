@@ -63,4 +63,27 @@ describe("resolveTarget", () => {
       resolveTarget("warszawski-git-feature-bauty.vercel.app", "/admin"),
     ).toEqual({ rewrite: null });
   });
+
+  // Agnostico al dominio: el dominio real es warszawski.com.ar
+  it("new .com.ar admin host serving / rewrites to /admin", () => {
+    expect(resolveTarget("admin.warszawski.com.ar", "/")).toEqual({
+      rewrite: "/admin",
+    });
+  });
+
+  it("new .com.ar admin host with subpath rewrites under /admin", () => {
+    expect(resolveTarget("admin.warszawski.com.ar", "/productos")).toEqual({
+      rewrite: "/admin/productos",
+    });
+  });
+
+  it("new .com.ar public host serving / stays at /", () => {
+    expect(resolveTarget("warszawski.com.ar", "/")).toEqual({ rewrite: null });
+  });
+
+  it("new .com.ar public host accessing /admin returns 404 redirect", () => {
+    expect(resolveTarget("warszawski.com.ar", "/admin")).toEqual({
+      rewrite: "/not-found",
+    });
+  });
 });

@@ -3,7 +3,7 @@ import type { Product } from "@/types/product";
 import { type ContactInfo, parseAddressForSchema } from "@/lib/content/contact";
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://warszawski.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://warszawski.com.ar"
 ).replace(/\/$/, "");
 
 const BRAND_DESCRIPTION =
