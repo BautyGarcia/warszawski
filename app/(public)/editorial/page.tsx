@@ -1,7 +1,8 @@
 import { Reveal } from "@/components/public/Reveal";
 import { EditorialCard } from "@/components/public/editorial/EditorialCard";
+import { JsonLd } from "@/components/JsonLd";
 import { listPublishedPosts } from "@/lib/editorial/queries";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, blogJsonLd } from "@/lib/seo";
 
 export const metadata = {
   title: "Editorial",
@@ -22,6 +23,7 @@ export default async function EditorialIndexPage() {
 
   return (
     <main className="flex flex-col">
+      {posts.length > 0 ? <JsonLd data={blogJsonLd(posts)} /> : null}
       <section className="flex w-full flex-col items-start bg-bg px-6 pb-12 pt-16 md:px-12 md:pb-16 md:pt-32 lg:px-20">
         <Reveal immediate delay={0}>
           <span className="inline-block text-[10px] font-medium uppercase tracking-[0.3em] text-gold-dark md:text-[11px]">

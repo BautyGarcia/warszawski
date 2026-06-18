@@ -123,6 +123,7 @@ export function organizationJsonLd(contact?: ContactInfo) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
     name: "Warszawski",
     alternateName: "Warszawski Eyewear",
     url: SITE_URL,
@@ -135,6 +136,70 @@ export function organizationJsonLd(contact?: ContactInfo) {
     ...(FOUNDING_YEAR ? { foundingDate: FOUNDING_YEAR } : {}),
     ...(sameAs.length > 0 ? { sameAs } : {}),
     ...(contactPoint ? { contactPoint } : {}),
+  };
+}
+
+// Extrae lat/lng de un link de Google Maps. Soporta el formato del path
+// (`!3d<lat>!4d<lng>`) y el del centro del mapa (`@<lat>,<lng>`).
+function parseLatLngFromMapsUrl(
+  url: string | undefined | null,
+): { lat: number; lng: number } | null {
+  if (!url) return null;
+  const place = url.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
+  if (place) return { lat: Number(place[1]), lng: Number(place[2]) };
+  const center = url.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+  if (center) return { lat: Number(center[1]), lng: Number(center[2]) };
+  return null;
+}
+
+/**
+ * LocalBusiness (OpticalStore) para el showroom físico. Habilita rich results
+ * de mapa/local y aporta una entidad local fuerte para buscadores y AI search.
+ * Devuelve null si no hay direccion cargada (no tiene sentido sin ella).
+ * Geo se deriva del link de Google Maps editable (contact.mapsUrl).
+ */
+export function localBusinessJsonLd(contact?: ContactInfo) {
+  const primary = (contact?.addresses ?? []).find((a) => a.address.length > 0);
+  if (!primary) return null;
+
+  const parsed = parseAddressForSchema(primary.address);
+  const geo = parseLatLngFromMapsUrl(contact?.mapsUrl);
+  const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
+  const telephone = primary.phone || (whatsappDigits ? `+${whatsappDigits}` : "");
+  const sameAs = [
+    contact?.instagramUrl,
+    contact?.facebookUrl,
+    contact?.tiktokUrl,
+  ].filter((u): u is string => !!u);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "OpticalStore",
+    "@id": `${SITE_URL}/#localbusiness`,
+    name: "Warszawski",
+    url: SITE_URL,
+    image: `${SITE_URL}/web-app-manifest-512x512.png`,
+    description: BRAND_DESCRIPTION,
+    parentOrganization: { "@id": `${SITE_URL}/#organization` },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: parsed.streetAddress,
+      addressLocality: parsed.addressLocality,
+      addressCountry: parsed.addressCountry,
+    },
+    ...(geo
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: geo.lat,
+            longitude: geo.lng,
+          },
+        }
+      : {}),
+    ...(telephone ? { telephone } : {}),
+    ...(contact?.mapsUrl ? { hasMap: contact.mapsUrl } : {}),
+    areaServed: "AR",
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
 
@@ -185,6 +250,42 @@ export function collectionPageJsonLd(opts: {
       "@type": "ItemList",
       numberOfItems: opts.numberOfItems,
     },
+  };
+}
+
+type BlogIndexPost = {
+  slug: string;
+  title: string;
+  cover_image?: string | null;
+  author_name?: string;
+  published_at?: string | null;
+  created_at: string;
+  updated_at?: string | null;
+};
+
+/** Schema del índice editorial: un Blog con la lista de BlogPosting. */
+export function blogJsonLd(posts: BlogIndexPost[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": `${SITE_URL}/editorial#blog`,
+    name: "Editorial Warszawski",
+    description:
+      "Notas sobre diseño, materiales, calce y cultura óptica. Editorial Warszawski.",
+    url: `${SITE_URL}/editorial`,
+    inLanguage: "es-AR",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting" as const,
+      headline: p.title,
+      url: `${SITE_URL}/editorial/${p.slug}`,
+      ...(p.cover_image ? { image: p.cover_image } : {}),
+      ...(p.author_name
+        ? { author: { "@type": "Person" as const, name: p.author_name } }
+        : {}),
+      datePublished: p.published_at ?? p.created_at,
+      ...(p.updated_at ? { dateModified: p.updated_at } : {}),
+    })),
   };
 }
 
