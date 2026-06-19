@@ -134,6 +134,11 @@ export function organizationJsonLd(contact?: ContactInfo) {
     ...(primaryAddress ? { address: primaryAddress } : {}),
     ...(locations.length > 1 ? { location: locations } : {}),
     ...(FOUNDING_YEAR ? { foundingDate: FOUNDING_YEAR } : {}),
+    founder: {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#founder`,
+      name: "Alfredo Warszawski",
+    },
     ...(sameAs.length > 0 ? { sameAs } : {}),
     ...(contactPoint ? { contactPoint } : {}),
   };
