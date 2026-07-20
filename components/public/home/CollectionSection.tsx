@@ -28,7 +28,7 @@ export async function CollectionSection({
             La coleccion esta llegando. Escribinos por WhatsApp y te contamos qué modelos tenemos disponibles.
           </p>
           {whatsappNumber ? (
-            <WhatsAppButton number={whatsappNumber} size="md" className="mt-8">
+            <WhatsAppButton number={whatsappNumber} size="md" className="mt-8" source="coleccion">
               Consultar disponibilidad
             </WhatsAppButton>
           ) : null}

@@ -25,7 +25,7 @@ export async function FinalCTA({
             {content[descKey]}
           </p>
           {whatsappNumber ? (
-            <WhatsAppButton number={whatsappNumber} size="lg" className="mt-8 md:mt-12">
+            <WhatsAppButton number={whatsappNumber} size="lg" className="mt-8 md:mt-12" source="cta_final">
               Escribinos por WhatsApp
             </WhatsAppButton>
           ) : null}

@@ -45,6 +45,7 @@ export async function ProductInfo({ product }: { product: Product }) {
             message={`Hola, quiero consultar por ${product.name}`}
             size="md"
             className="w-full"
+            source="producto"
           >
             Consultar por {product.name}
           </WhatsAppButton>

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackShowroomClick } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -24,6 +27,7 @@ export function ShowroomButton({ href, children, size = "md", className }: Props
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackShowroomClick()}
       className={cn(
         "inline-flex items-center justify-center rounded-xs border border-ink font-medium text-ink tracking-[0.06em]",
         "transition-[background-color,color,transform] duration-300 ease-out",

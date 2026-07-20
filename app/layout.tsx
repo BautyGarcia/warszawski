@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SITE_URL } from "@/lib/seo";
+import { GoogleTags } from "@/components/analytics/GoogleTags";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen antialiased">
         {children}
         <Analytics />
+        <GoogleTags />
       </body>
     </html>
   );

@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { appendGclidToMessage, trackWhatsAppLead } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -8,6 +12,8 @@ type Props = {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg";
   className?: string;
+  /** Origen del CTA, para atribuir la conversión (hero, cta_final, producto…). */
+  source?: string;
 };
 
 const SIZES = {
@@ -16,12 +22,28 @@ const SIZES = {
   lg: "py-5 px-14 text-[15px]/4.5",
 } as const;
 
-export function WhatsAppButton({ number, message, children, size = "md", className }: Props) {
+export function WhatsAppButton({
+  number,
+  message,
+  children,
+  size = "md",
+  className,
+  source = "generico",
+}: Props) {
+  // SSR y primer render: URL base sin gclid (válida para crawlers y no-JS).
+  // Tras montar, si hay un gclid guardado, la "mejoramos" con la referencia.
+  const [href, setHref] = useState(() => buildWhatsAppUrl(number, message));
+
+  useEffect(() => {
+    setHref(buildWhatsAppUrl(number, appendGclidToMessage(message)));
+  }, [number, message]);
+
   return (
     <Link
-      href={buildWhatsAppUrl(number, message)}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackWhatsAppLead(source)}
       className={cn(
         "inline-flex items-center justify-center rounded-xs bg-ink font-medium text-bg tracking-[0.06em]",
         "transition-[background-color,transform] duration-300 ease-out",
