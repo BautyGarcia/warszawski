@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Reveal } from "@/components/public/Reveal";
+import { WhatsAppLink } from "@/components/public/WhatsAppLink";
 import { cn } from "@/lib/utils";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { getContactInfo } from "@/lib/content/contact";
 import type { Product } from "@/types/product";
 
@@ -67,17 +67,17 @@ export async function ExclusiveBlock({ index, product, align }: Props) {
       </p>
       <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4 md:mt-10">
         {whatsappNumber ? (
-          <Link
-            href={buildWhatsAppUrl(whatsappNumber, `Hola, quiero consultar por ${product.name}`)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsAppLink
+            number={whatsappNumber}
+            message={`Hola, quiero consultar por ${product.name}`}
+            source="exclusivo"
             className="group inline-flex w-fit items-center gap-1 pb-0.5 text-[13px] font-medium tracking-[0.06em] text-gold transition-colors duration-300 hover:text-bg"
           >
             <span className="relative">
               Consultar por {product.name}
               <span className="absolute -bottom-px left-0 h-px w-full bg-gold transition-colors duration-300 group-hover:bg-bg" />
             </span>
-          </Link>
+          </WhatsAppLink>
         ) : null}
         <Link
           href={productHref}

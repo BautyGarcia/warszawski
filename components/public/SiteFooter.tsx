@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/site-config";
-import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { WhatsAppLink } from "@/components/public/WhatsAppLink";
 import type { ContactInfo } from "@/lib/content/contact";
 
 const NAV_LINKS = [
@@ -38,9 +38,13 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
         {showContactCol ? (
           <FooterColumn title="Contacto">
             {contact.whatsappNumber ? (
-              <FooterLink href={buildWhatsAppUrl(contact.whatsappNumber)} external>
+              <WhatsAppLink
+                number={contact.whatsappNumber}
+                source="footer"
+                className="text-sm text-bg/60 transition-colors hover:text-bg"
+              >
                 WhatsApp
-              </FooterLink>
+              </WhatsAppLink>
             ) : null}
             {contact.instagramUrl ? (
               <FooterLink href={contact.instagramUrl} external>
