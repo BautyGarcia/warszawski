@@ -40,6 +40,7 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
             {contact.whatsappNumber ? (
               <WhatsAppLink
                 number={contact.whatsappNumber}
+                message="Hola, quiero hacer una consulta"
                 source="footer"
                 className="text-sm text-bg/60 transition-colors hover:text-bg"
               >

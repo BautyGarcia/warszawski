@@ -29,7 +29,12 @@ export async function Hero({ content }: { content: ContentMap }) {
 
       {whatsappNumber ? (
         <Reveal immediate delay={400} className="mt-10 md:mt-14">
-          <WhatsAppButton number={whatsappNumber} size="md" source="hero">
+          <WhatsAppButton
+            number={whatsappNumber}
+            size="md"
+            message="Hola, quiero consultar por la venta mayorista"
+            source="hero"
+          >
             {content["home.hero.cta"]}
           </WhatsAppButton>
         </Reveal>

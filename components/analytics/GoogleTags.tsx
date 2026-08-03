@@ -1,13 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import Script from "next/script";
-import {
-  GA_ID,
-  GOOGLE_ADS_ID,
-  analyticsEnabled,
-  captureGclidFromUrl,
-} from "@/lib/analytics";
+import { GA_ID, GOOGLE_ADS_ID, analyticsEnabled } from "@/lib/analytics";
 
 /**
  * Carga el Google tag (gtag.js) una sola vez y configura, con el mismo script,
@@ -18,12 +12,6 @@ import {
  * las cuentas creadas, el sitio no carga scripts de Google.
  */
 export function GoogleTags() {
-  // Captura el gclid en cada carga de página (incluye navegaciones del cliente,
-  // por si el usuario entra por una URL con gclid y luego navega).
-  useEffect(() => {
-    captureGclidFromUrl();
-  }, []);
-
   if (!analyticsEnabled) return null;
 
   const primaryId = GA_ID || GOOGLE_ADS_ID;

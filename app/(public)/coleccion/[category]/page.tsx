@@ -116,6 +116,8 @@ export default async function CategoryPage({
                 number={contact.whatsappNumber}
                 size="md"
                 className="mt-8"
+                message={`Hola, quiero consultar por la disponibilidad de ${meta.title.toLowerCase()}`}
+                source="coleccion_categoria"
               >
                 Consultar disponibilidad
               </WhatsAppButton>

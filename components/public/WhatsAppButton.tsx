@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { appendGclidToMessage, trackWhatsAppLead } from "@/lib/analytics";
+import { trackWhatsAppLead } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -30,13 +29,7 @@ export function WhatsAppButton({
   className,
   source = "generico",
 }: Props) {
-  // SSR y primer render: URL base sin gclid (válida para crawlers y no-JS).
-  // Tras montar, si hay un gclid guardado, la "mejoramos" con la referencia.
-  const [href, setHref] = useState(() => buildWhatsAppUrl(number, message));
-
-  useEffect(() => {
-    setHref(buildWhatsAppUrl(number, appendGclidToMessage(message)));
-  }, [number, message]);
+  const href = buildWhatsAppUrl(number, message);
 
   return (
     <Link

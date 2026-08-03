@@ -84,7 +84,12 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
             ),
           )}
           {whatsappNumber ? (
-            <WhatsAppButton number={whatsappNumber} size="sm" source="header">
+            <WhatsAppButton
+              number={whatsappNumber}
+              size="sm"
+              message="Hola, quiero hacer una consulta"
+              source="header"
+            >
               WhatsApp
             </WhatsAppButton>
           ) : null}
@@ -170,7 +175,13 @@ export function SiteHeader({ whatsappNumber }: { whatsappNumber: string }) {
 
           {whatsappNumber ? (
             <div className="border-t border-line px-6 pb-10 pt-7 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:fill-mode-both motion-safe:duration-700 motion-safe:[animation-delay:300ms]">
-              <WhatsAppButton number={whatsappNumber} size="lg" className="w-full" source="header_mobile">
+              <WhatsAppButton
+                number={whatsappNumber}
+                size="lg"
+                className="w-full"
+                message="Hola, quiero hacer una consulta"
+                source="header_mobile"
+              >
                 WhatsApp
               </WhatsAppButton>
             </div>
