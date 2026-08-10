@@ -11,7 +11,8 @@ export default function robots(): MetadataRoute.Robots {
         // panel y la API.
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/"],
+        // /r/ = reportes privados por link secreto (además tienen noindex).
+        disallow: ["/admin", "/api/", "/r/"],
       },
       {
         // Scraper de ByteDance/TikTok: ignora robots.txt y no aporta visibilidad.

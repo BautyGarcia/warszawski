@@ -43,3 +43,6 @@ tools/gads/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Supabase CLI temp
+supabase/.temp/
