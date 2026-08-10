@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 const TABS = [
   { label: "Productos", href: "/admin/productos" },
   { label: "Contenido", href: "/admin/contenido" },
+  { label: "Reportes", href: "/admin/reportes" },
 ];
 
 export function AdminTopBar() {

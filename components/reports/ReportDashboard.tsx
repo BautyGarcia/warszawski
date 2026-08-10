@@ -57,13 +57,18 @@ export function ReportDashboard({ data }: { data: ReportData }) {
       </header>
 
       {/* Métricas principales */}
-      <section className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+      <section className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
         <StatTile
           label="Consultas (30 días)"
           value={fmtConv(s.conversions30d)}
           sub="Compradores mayoristas que escribieron por WhatsApp"
           delta={s.weekDeltaPct != null ? `${deltaUp ? "+" : ""}${s.weekDeltaPct.toFixed(0)}%` : null}
           deltaUp={deltaUp}
+        />
+        <StatTile
+          label="Visitas (30 días)"
+          value={num.format(s.clicks30d)}
+          sub="Personas que entraron al sitio desde los anuncios"
         />
         <StatTile
           label="Costo por consulta"
@@ -73,7 +78,7 @@ export function ReportDashboard({ data }: { data: ReportData }) {
         <StatTile
           label="Inversión (30 días)"
           value={ars.format(s.cost30d)}
-          sub={`${num.format(s.clicks30d)} visitas al sitio desde los anuncios`}
+          sub="Presupuesto invertido en los anuncios"
         />
       </section>
 
