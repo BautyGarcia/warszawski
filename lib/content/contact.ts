@@ -3,17 +3,19 @@ import { getContentMap } from "@/lib/content/fetch";
 import { normalizeExternalUrl } from "@/lib/url";
 
 export type OfficeAddress = {
+  /** Nombre opcional del local. Ej: "Showroom". Vacio = se muestra la direccion. */
+  name: string;
   /** Direccion postal completa. Ej: "Montevideo 536 1A, Capital Federal" */
   address: string;
   /** Telefono de linea opcional asociado a esta oficina. Vacio = no mostrar. */
   phone: string;
+  /** Link de Google Maps opcional. Vacio = se busca la direccion en Maps. */
+  mapsUrl: string;
 };
 
 export type ContactInfo = {
   /** Numero de WhatsApp (uno solo). Usado en TODOS los CTAs del sitio. */
   whatsappNumber: string;
-  /** Link de Google Maps del showroom. Vacio = no mostrar el boton. */
-  mapsUrl: string;
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
@@ -41,8 +43,8 @@ export function parseListValue(raw: string | undefined | null): string[] {
 
 /**
  * Parsea un valor de field_type "address_list" (JSON array de objetos
- * {address, phone}) a OfficeAddress[]. Acepta defensivamente strings sueltos
- * (backwards-compat con el formato anterior) y los wrappea.
+ * {name, address, phone, mapsUrl}) a OfficeAddress[]. Acepta defensivamente
+ * strings sueltos y objetos sin name/mapsUrl (formatos anteriores).
  */
 export function parseAddressListValue(
   raw: string | undefined | null,
@@ -56,17 +58,19 @@ export function parseAddressListValue(
         if (typeof item === "string") {
           const address = item.trim();
           if (!address) return null;
-          return { address, phone: "" };
+          return { name: "", address, phone: "", mapsUrl: "" };
         }
         if (item && typeof item === "object") {
-          const address = String(
-            (item as Record<string, unknown>).address ?? "",
-          ).trim();
+          const obj = item as Record<string, unknown>;
+          const str = (k: string) => String(obj[k] ?? "").trim();
+          const address = str("address");
           if (!address) return null;
-          const phone = String(
-            (item as Record<string, unknown>).phone ?? "",
-          ).trim();
-          return { address, phone };
+          return {
+            name: str("name"),
+            address,
+            phone: str("phone"),
+            mapsUrl: normalizeExternalUrl(str("mapsUrl")),
+          };
         }
         return null;
       })
@@ -74,6 +78,15 @@ export function parseAddressListValue(
   } catch {
     return [];
   }
+}
+
+/**
+ * Link de Google Maps de un local: el cargado en el admin, o una busqueda de
+ * la direccion si no hay link (asi el boton nunca queda sin destino).
+ */
+export function getMapsHref(office: OfficeAddress): string {
+  if (office.mapsUrl) return office.mapsUrl;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(office.address)}`;
 }
 
 /**
@@ -92,7 +105,6 @@ export const getContactInfo = cache(async (): Promise<ContactInfo> => {
       content["contact.whatsapp.number"] ||
       process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
       "",
-    mapsUrl: normalizeExternalUrl(content["contact.whatsapp.maps"]),
     instagramUrl: normalizeExternalUrl(content["contact.social.instagram"]),
     facebookUrl: normalizeExternalUrl(content["contact.social.facebook"]),
     tiktokUrl: normalizeExternalUrl(content["contact.social.tiktok"]),

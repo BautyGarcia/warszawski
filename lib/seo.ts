@@ -106,7 +106,7 @@ export function organizationJsonLd(contact?: ContactInfo) {
     const parsed = parseAddressForSchema(office.address);
     return {
       "@type": "Place" as const,
-      name: i === 0 ? "Oficina principal" : `Oficina ${i + 1}`,
+      name: office.name || (i === 0 ? "Oficina principal" : `Oficina ${i + 1}`),
       address: {
         "@type": "PostalAddress" as const,
         streetAddress: parsed.streetAddress,
@@ -161,14 +161,14 @@ function parseLatLngFromMapsUrl(
  * LocalBusiness (OpticalStore) para el showroom físico. Habilita rich results
  * de mapa/local y aporta una entidad local fuerte para buscadores y AI search.
  * Devuelve null si no hay direccion cargada (no tiene sentido sin ella).
- * Geo se deriva del link de Google Maps editable (contact.mapsUrl).
+ * Geo se deriva del link de Google Maps del local principal.
  */
 export function localBusinessJsonLd(contact?: ContactInfo) {
   const primary = (contact?.addresses ?? []).find((a) => a.address.length > 0);
   if (!primary) return null;
 
   const parsed = parseAddressForSchema(primary.address);
-  const geo = parseLatLngFromMapsUrl(contact?.mapsUrl);
+  const geo = parseLatLngFromMapsUrl(primary.mapsUrl);
   const whatsappDigits = contact?.whatsappNumber?.replace(/\D/g, "") ?? "";
   const telephone = primary.phone || (whatsappDigits ? `+${whatsappDigits}` : "");
   const sameAs = [
@@ -202,7 +202,7 @@ export function localBusinessJsonLd(contact?: ContactInfo) {
         }
       : {}),
     ...(telephone ? { telephone } : {}),
-    ...(contact?.mapsUrl ? { hasMap: contact.mapsUrl } : {}),
+    ...(primary.mapsUrl ? { hasMap: primary.mapsUrl } : {}),
     areaServed: "AR",
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };

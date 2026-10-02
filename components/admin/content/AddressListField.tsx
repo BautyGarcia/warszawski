@@ -27,7 +27,7 @@ export function AddressListField({ value, onChange }: Props) {
   }
 
   function addItem() {
-    commit([...items, { address: "", phone: "" }]);
+    commit([...items, { name: "", address: "", phone: "", mapsUrl: "" }]);
   }
 
   function removeItem(idx: number) {
@@ -52,20 +52,20 @@ export function AddressListField({ value, onChange }: Props) {
           <div className="flex items-start gap-2">
             <div className="flex flex-1 flex-col gap-1">
               <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B6B6B]">
-                Direccion
+                Nombre
               </span>
               <input
                 type="text"
-                value={item.address}
-                onChange={(e) => setField(i, "address", e.target.value)}
-                placeholder="Montevideo 536 1A, Capital Federal"
+                value={item.name}
+                onChange={(e) => setField(i, "name", e.target.value)}
+                placeholder="Showroom (opcional)"
                 className="h-10 rounded-md border border-black/10 bg-[#F7F7F5] px-3 text-sm text-ink outline-none transition-colors placeholder:text-[#999] focus:border-ink/40 focus:bg-white"
               />
             </div>
             <button
               type="button"
               onClick={() => removeItem(i)}
-              aria-label="Quitar oficina"
+              aria-label="Quitar local"
               className="mt-[22px] flex size-10 shrink-0 items-center justify-center rounded-md border border-black/10 text-[#DC3545] transition-colors hover:border-[#DC3545]/40"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -76,6 +76,18 @@ export function AddressListField({ value, onChange }: Props) {
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B6B6B]">
+              Direccion
+            </span>
+            <input
+              type="text"
+              value={item.address}
+              onChange={(e) => setField(i, "address", e.target.value)}
+              placeholder="Montevideo 536 1A, Capital Federal"
+              className="h-10 rounded-md border border-black/10 bg-[#F7F7F5] px-3 text-sm text-ink outline-none transition-colors placeholder:text-[#999] focus:border-ink/40 focus:bg-white"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B6B6B]">
               Telefono de linea
             </span>
             <input
@@ -83,6 +95,18 @@ export function AddressListField({ value, onChange }: Props) {
               value={item.phone}
               onChange={(e) => setField(i, "phone", e.target.value)}
               placeholder="011 4321-5678 (opcional)"
+              className="h-10 rounded-md border border-black/10 bg-[#F7F7F5] px-3 text-sm text-ink outline-none transition-colors placeholder:text-[#999] focus:border-ink/40 focus:bg-white"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B6B6B]">
+              Link de Google Maps
+            </span>
+            <input
+              type="text"
+              value={item.mapsUrl}
+              onChange={(e) => setField(i, "mapsUrl", e.target.value)}
+              placeholder="https://maps.app.goo.gl/... (opcional — si no, se busca la direccion)"
               className="h-10 rounded-md border border-black/10 bg-[#F7F7F5] px-3 text-sm text-ink outline-none transition-colors placeholder:text-[#999] focus:border-ink/40 focus:bg-white"
             />
           </div>
@@ -98,7 +122,7 @@ export function AddressListField({ value, onChange }: Props) {
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
-        Agregar oficina
+        Agregar local
       </button>
     </div>
   );

@@ -50,8 +50,11 @@ export function trackWhatsAppLead(source: string): void {
   }
 }
 
-/** Evento secundario (no conversión): click al botón de showroom/mapa. */
-export function trackShowroomClick(): void {
+/**
+ * Evento secundario (no conversión): click a "Cómo llegar" de un local.
+ * `location` es el nombre del local (o su dirección si no tiene nombre).
+ */
+export function trackShowroomClick(location: string): void {
   if (typeof window === "undefined" || typeof window.gtag !== "function") return;
-  window.gtag("event", "showroom_click");
+  window.gtag("event", "showroom_click", { location });
 }

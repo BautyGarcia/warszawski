@@ -1,5 +1,8 @@
 import { CATEGORY_META } from "@/lib/category";
 
+const SHOWROOM_MAPS_URL =
+  "https://www.google.com/maps/place/Montevideo+536,+C1019ABL+Cdad.+Aut%C3%B3noma+de+Buenos+Aires/@-34.6025739,-58.389679,16z/data=!3m1!4b1!4m6!3m5!1s0x95bccac1265e5245:0xe109fa22d96fdd68!8m2!3d-34.6025739!4d-58.389679!16s%2Fg%2F11q2x8287_?entry=ttu";
+
 export type ContentField = {
   key: string;
   page: "home" | "about" | "contact";
@@ -48,10 +51,19 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     key: "home.hero.showroomcta",
     page: "home",
     section: "hero",
-    label: "Texto boton showroom",
+    label: "Texto boton locales (un solo local)",
     fieldType: "short_text",
     defaultValue: "Visite nuestro showroom",
-    hint: "Boton que abre el link de Google Maps. El link se carga en Contacto > WhatsApp.",
+    hint: "Se usa cuando hay un solo local cargado: el boton abre directo su Google Maps. Los locales se cargan en Contacto > Locales.",
+  },
+  {
+    key: "home.hero.locationscta",
+    page: "home",
+    section: "hero",
+    label: "Texto boton locales (varios locales)",
+    fieldType: "short_text",
+    defaultValue: "Visite nuestros locales",
+    hint: "Se usa cuando hay dos o mas locales: el boton despliega la lista para elegir a cual ir.",
   },
   {
     key: "home.hero.subcta",
@@ -337,16 +349,6 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     placeholder: "5491100000000",
     hint: "Codigo de pais + numero, sin + ni espacios. Es uno solo — se usa en todos los CTAs del sitio.",
   },
-  {
-    key: "contact.whatsapp.maps",
-    page: "contact",
-    section: "whatsapp",
-    label: "Link de Google Maps (showroom)",
-    fieldType: "url",
-    defaultValue:
-      "https://www.google.com/maps/place/Montevideo+536,+C1019ABL+Cdad.+Aut%C3%B3noma+de+Buenos+Aires/@-34.6025739,-58.389679,16z/data=!3m1!4b1!4m6!3m5!1s0x95bccac1265e5245:0xe109fa22d96fdd68!8m2!3d-34.6025739!4d-58.389679!16s%2Fg%2F11q2x8287_?entry=ttu",
-    hint: "Pega el enlace de Google Maps de la direccion. Alimenta el boton 'Visite nuestro showroom' del inicio. Dejar vacio para ocultarlo.",
-  },
 
   // ── CONTACT / social ─────────────────────────────────────
   {
@@ -382,10 +384,16 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     key: "contact.address.list",
     page: "contact",
     section: "address",
-    label: "Oficinas",
+    label: "Locales",
     fieldType: "address_list",
-    defaultValue:
-      '[{"address":"Montevideo 536 1A, Capital Federal","phone":""}]',
-    hint: "Cada oficina tiene una direccion y un telefono de linea opcional. La primera oficina se considera la principal en el schema SEO.",
+    defaultValue: JSON.stringify([
+      {
+        name: "Showroom",
+        address: "Montevideo 536 1A, Capital Federal",
+        phone: "",
+        mapsUrl: SHOWROOM_MAPS_URL,
+      },
+    ]),
+    hint: "Cada local tiene nombre, direccion, telefono y link de Google Maps (opcionales salvo la direccion). Alimentan el boton de locales del inicio y el footer. El primero se considera el principal en el schema SEO.",
   },
 ];

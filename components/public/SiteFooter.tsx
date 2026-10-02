@@ -69,6 +69,11 @@ export function SiteFooter({ contact }: { contact: ContactInfo }) {
           <FooterColumn title={addresses.length > 1 ? "Oficinas" : "Oficina"}>
             {addresses.map((office, i) => (
               <div key={i} className="flex max-w-[220px] flex-col gap-0.5">
+                {office.name ? (
+                  <span className="text-[11px] uppercase tracking-[0.15em] text-bg/40">
+                    {office.name}
+                  </span>
+                ) : null}
                 <span className="whitespace-pre-line text-sm text-bg/60">
                   {office.address}
                 </span>

@@ -1,11 +1,11 @@
 import { Reveal } from "@/components/public/Reveal";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
-import { ShowroomButton } from "@/components/public/ShowroomButton";
+import { LocationsButton } from "@/components/public/LocationsButton";
 import { getContactInfo } from "@/lib/content/contact";
 import type { ContentMap } from "@/types/content";
 
 export async function Hero({ content }: { content: ContentMap }) {
-  const { whatsappNumber, mapsUrl } = await getContactInfo();
+  const { whatsappNumber, addresses } = await getContactInfo();
 
   return (
     <section className="flex min-h-screen w-full shrink-0 flex-col items-center justify-center bg-bg px-6 py-24 md:px-12 md:py-32 lg:px-20">
@@ -40,15 +40,18 @@ export async function Hero({ content }: { content: ContentMap }) {
         </Reveal>
       ) : null}
 
-      {mapsUrl ? (
+      {addresses.length > 0 ? (
         <Reveal
           immediate
           delay={480}
           className={whatsappNumber ? "mt-4" : "mt-10 md:mt-14"}
         >
-          <ShowroomButton href={mapsUrl} size="md">
-            {content["home.hero.showroomcta"]}
-          </ShowroomButton>
+          <LocationsButton
+            locations={addresses}
+            singleLabel={content["home.hero.showroomcta"]}
+            multipleLabel={content["home.hero.locationscta"]}
+            size="md"
+          />
         </Reveal>
       ) : null}
 
