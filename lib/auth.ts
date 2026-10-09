@@ -13,7 +13,8 @@ const vercelHosts = [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL].filt
 // public site, so the admin origin must be trusted for /api/auth/* requests. Server actions (actions/auth.ts)
 // call auth.api directly and skip the origin check anyway.
 const adminOrigins = [
-  process.env.BETTER_AUTH_URL ? process.env.BETTER_AUTH_URL.replace(/^(https?:\/\/)/, "$1admin.") : null,
+  // https://www.warszawski.com.ar -> https://admin.warszawski.com.ar
+  process.env.BETTER_AUTH_URL ? process.env.BETTER_AUTH_URL.replace(/^(https?:\/\/)(www\.)?/, "$1admin.") : null,
   "http://admin.localhost:3000",
 ].filter((o): o is string => Boolean(o));
 
