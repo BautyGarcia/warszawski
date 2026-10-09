@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { trackShowroomClick } from "@/lib/analytics";
-import { getMapsHref, type OfficeAddress } from "@/lib/content/contact";
+import { getMapsHref, type OfficeAddress } from "@/lib/content/contact-parse";
 import { cn } from "@/lib/utils";
 
 type Props = {

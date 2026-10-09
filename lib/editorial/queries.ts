@@ -1,20 +1,25 @@
-import { getSupabasePublic } from "@/lib/supabase/public";
+import { and, desc, eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { editorial_posts } from "@/lib/schema";
+import { rewriteLegacyStorageUrl } from "@/lib/storage/legacy-url";
 import type { EditorialPost } from "@/types/editorial";
 
-const supabaseConfigured =
-  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const dbConfigured = !!process.env.DATABASE_URL;
 
+export function withCurrentCoverUrl(p: EditorialPost): EditorialPost {
+  return { ...p, cover_image: rewriteLegacyStorageUrl(p.cover_image) };
+}
+
+// Public reads only see published posts (was the "editorial public read" RLS policy on Supabase).
 export async function listPublishedPosts(): Promise<EditorialPost[]> {
-  if (!supabaseConfigured) return [];
+  if (!dbConfigured) return [];
   try {
-    const sb = getSupabasePublic();
-    const { data } = await sb
-      .from("editorial_posts")
-      .select("*")
-      .eq("published", true)
-      .order("published_at", { ascending: false });
-    return (data ?? []) as EditorialPost[];
+    const rows = await db
+      .select()
+      .from(editorial_posts)
+      .where(eq(editorial_posts.published, true))
+      .orderBy(desc(editorial_posts.published_at));
+    return rows.map(withCurrentCoverUrl);
   } catch {
     return [];
   }
@@ -23,16 +28,14 @@ export async function listPublishedPosts(): Promise<EditorialPost[]> {
 export async function getPublishedPostBySlug(
   slug: string,
 ): Promise<EditorialPost | null> {
-  if (!supabaseConfigured) return null;
+  if (!dbConfigured) return null;
   try {
-    const sb = getSupabasePublic();
-    const { data } = await sb
-      .from("editorial_posts")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle();
-    return (data as EditorialPost | null) ?? null;
+    const [row] = await db
+      .select()
+      .from(editorial_posts)
+      .where(and(eq(editorial_posts.slug, slug), eq(editorial_posts.published, true)))
+      .limit(1);
+    return row ? withCurrentCoverUrl(row) : null;
   } catch {
     return null;
   }

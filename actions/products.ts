@@ -1,9 +1,11 @@
 "use server";
 
+import { asc, eq, max } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/guard";
+import { db } from "@/lib/db";
+import { products } from "@/lib/schema";
 import { productSchema, type ProductInput } from "@/schemas/product";
 
 function nullify(v: string): string | null {
@@ -35,20 +37,11 @@ function revalidateProductPaths() {
 export async function createProductAction(input: unknown) {
   await requireAdmin();
   const data = productSchema.parse(input);
-  const sb = getSupabaseAdmin();
 
-  const { data: max } = await sb
-    .from("products")
-    .select("display_order")
-    .order("display_order", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  const display_order = (max?.display_order ?? 0) + 1;
+  const [{ maxOrder }] = await db.select({ maxOrder: max(products.display_order) }).from(products);
+  const display_order = (maxOrder ?? 0) + 1;
 
-  const { error } = await sb
-    .from("products")
-    .insert({ ...toRow(data), display_order });
-  if (error) throw new Error(error.message);
+  await db.insert(products).values({ ...toRow(data), display_order });
 
   revalidateProductPaths();
   redirect("/admin/productos");
@@ -57,10 +50,8 @@ export async function createProductAction(input: unknown) {
 export async function updateProductAction(id: string, input: unknown) {
   await requireAdmin();
   const data = productSchema.parse(input);
-  const sb = getSupabaseAdmin();
 
-  const { error } = await sb.from("products").update(toRow(data)).eq("id", id);
-  if (error) throw new Error(error.message);
+  await db.update(products).set(toRow(data)).where(eq(products.id, id));
 
   revalidateProductPaths();
   redirect("/admin/productos");
@@ -71,9 +62,7 @@ export async function deleteProductAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  const sb = getSupabaseAdmin();
-  const { error } = await sb.from("products").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  await db.delete(products).where(eq(products.id, id));
 
   revalidateProductPaths();
 }
@@ -84,12 +73,10 @@ export async function reorderProductAction(formData: FormData) {
   const direction = String(formData.get("direction") ?? "") as "up" | "down";
   if (!id || (direction !== "up" && direction !== "down")) return;
 
-  const sb = getSupabaseAdmin();
-  const { data: rows } = await sb
-    .from("products")
-    .select("id,display_order")
-    .order("display_order");
-  if (!rows) return;
+  const rows = await db
+    .select({ id: products.id, display_order: products.display_order })
+    .from(products)
+    .orderBy(asc(products.display_order));
 
   const idx = rows.findIndex((r) => r.id === id);
   const swap = direction === "up" ? idx - 1 : idx + 1;
@@ -97,8 +84,10 @@ export async function reorderProductAction(formData: FormData) {
 
   const a = rows[idx];
   const b = rows[swap];
-  await sb.from("products").update({ display_order: b.display_order }).eq("id", a.id);
-  await sb.from("products").update({ display_order: a.display_order }).eq("id", b.id);
+  await db.transaction(async (tx) => {
+    await tx.update(products).set({ display_order: b.display_order }).where(eq(products.id, a.id));
+    await tx.update(products).set({ display_order: a.display_order }).where(eq(products.id, b.id));
+  });
 
   revalidateProductPaths();
 }

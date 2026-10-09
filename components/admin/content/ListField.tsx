@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { parseListValue } from "@/lib/content/contact";
+import { parseListValue } from "@/lib/content/contact-parse";
 
 type Props = {
   value: string;

@@ -1,7 +1,9 @@
 "use server";
 
+import { APIError } from "better-auth/api";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth";
 
 export type LoginState = { error: string | null };
 
@@ -16,18 +18,20 @@ export async function loginAction(
     return { error: "Completá email y contraseña" };
   }
 
-  const sb = await getSupabaseServer();
-  const { error } = await sb.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    return { error: "Credenciales inválidas" };
+  try {
+    // nextCookies() in lib/auth.ts sets the session cookie from inside this server action.
+    await auth.api.signInEmail({ body: { email, password }, headers: await headers() });
+  } catch (err) {
+    if (err instanceof APIError) {
+      return { error: "Credenciales inválidas" };
+    }
+    throw err;
   }
 
   redirect("/admin/productos");
 }
 
 export async function logoutAction() {
-  const sb = await getSupabaseServer();
-  await sb.auth.signOut();
+  await auth.api.signOut({ headers: await headers() });
   redirect("/admin/login");
 }

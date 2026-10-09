@@ -1,11 +1,9 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth";
 
 export async function requireAdmin() {
-  const sb = await getSupabaseServer();
-  const {
-    data: { user },
-  } = await sb.auth.getUser();
-  if (!user) redirect("/admin/login");
-  return user;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/admin/login");
+  return session.user;
 }

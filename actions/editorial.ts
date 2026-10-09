@@ -1,9 +1,11 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/guard";
+import { db } from "@/lib/db";
+import { editorial_posts } from "@/lib/schema";
 import { editorialSchema, type EditorialInput } from "@/schemas/editorial";
 
 function nullify(v: string): string | null {
@@ -35,11 +37,9 @@ function revalidateEditorialPaths(slug?: string | null) {
 export async function createPostAction(input: unknown) {
   await requireAdmin();
   const data = editorialSchema.parse(input);
-  const sb = getSupabaseAdmin();
   const now = new Date().toISOString();
 
-  const { error } = await sb.from("editorial_posts").insert(toRow(data, now));
-  if (error) throw new Error(error.message);
+  await db.insert(editorial_posts).values(toRow(data, now));
 
   revalidateEditorialPaths(data.slug);
   redirect("/admin/editorial");
@@ -48,23 +48,21 @@ export async function createPostAction(input: unknown) {
 export async function updatePostAction(id: string, input: unknown) {
   await requireAdmin();
   const data = editorialSchema.parse(input);
-  const sb = getSupabaseAdmin();
   const now = new Date().toISOString();
 
   // Preserve previous published_at if already published and still published.
-  const { data: existing } = await sb
-    .from("editorial_posts")
-    .select("published, published_at")
-    .eq("id", id)
-    .maybeSingle();
+  const [existing] = await db
+    .select({ published: editorial_posts.published, published_at: editorial_posts.published_at })
+    .from(editorial_posts)
+    .where(eq(editorial_posts.id, id))
+    .limit(1);
 
   const row = toRow(data, now);
   if (data.published && existing?.published && existing?.published_at) {
     row.published_at = existing.published_at;
   }
 
-  const { error } = await sb.from("editorial_posts").update(row).eq("id", id);
-  if (error) throw new Error(error.message);
+  await db.update(editorial_posts).set(row).where(eq(editorial_posts.id, id));
 
   revalidateEditorialPaths(data.slug);
   redirect("/admin/editorial");
@@ -75,15 +73,13 @@ export async function deletePostAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  const sb = getSupabaseAdmin();
-  const { data: post } = await sb
-    .from("editorial_posts")
-    .select("slug")
-    .eq("id", id)
-    .maybeSingle();
+  const [post] = await db
+    .select({ slug: editorial_posts.slug })
+    .from(editorial_posts)
+    .where(eq(editorial_posts.id, id))
+    .limit(1);
 
-  const { error } = await sb.from("editorial_posts").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  await db.delete(editorial_posts).where(eq(editorial_posts.id, id));
 
   revalidateEditorialPaths(post?.slug ?? null);
 }

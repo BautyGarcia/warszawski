@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   parseAddressListValue,
   type OfficeAddress,
-} from "@/lib/content/contact";
+} from "@/lib/content/contact-parse";
 
 type Props = {
   value: string;

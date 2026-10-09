@@ -1,26 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveTarget } from "@/lib/routing/resolve-target";
-import { updateSession } from "@/lib/supabase/middleware";
 
-const supabaseConfigured =
-  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-export async function proxy(req: NextRequest) {
-  const sessionRes = supabaseConfigured
-    ? await updateSession(req)
-    : NextResponse.next({ request: req });
-
+// Host-based rewrites only (admin.<domain> -> /admin/*). Auth lives in better-auth cookies and is
+// checked by `requireAdmin()` in the admin layout and actions, so no session refresh happens here.
+export function proxy(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
   const { rewrite } = resolveTarget(host, req.nextUrl.pathname);
 
-  if (!rewrite) return sessionRes;
+  if (!rewrite) return NextResponse.next();
 
   const url = req.nextUrl.clone();
   url.pathname = rewrite;
-  const rewritten = NextResponse.rewrite(url, { request: req });
-  sessionRes.cookies.getAll().forEach((c) => rewritten.cookies.set(c.name, c.value));
-  return rewritten;
+  return NextResponse.rewrite(url);
 }
 
 export const config = {

@@ -1,4 +1,6 @@
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { asc, eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { ads_daily, ads_meta } from "@/lib/schema";
 
 export type AdsDaily = {
   date: string; // YYYY-MM-DD
@@ -64,40 +66,42 @@ export function computeSummary(daily: AdsDaily[]): ReportSummary {
 }
 
 /**
- * Lee las métricas del reporte desde Supabase con la service role key.
+ * Lee las métricas del reporte desde la base de datos (dbm Postgres).
  * SOLO usable desde el servidor (Server Components / route handlers).
  */
 export async function getReportData(): Promise<ReportData> {
-  const supabase = getSupabaseAdmin();
-
-  const [{ data: dailyRows }, { data: meta }] = await Promise.all([
-    supabase
-      .from("ads_daily")
-      .select("date, impressions, clicks, cost, conversions")
-      .order("date", { ascending: true }),
-    supabase
-      .from("ads_meta")
-      .select("top_sources, updated_at")
-      .eq("id", 1)
-      .maybeSingle(),
+  const [dailyRows, [meta]] = await Promise.all([
+    db
+      .select({
+        date: ads_daily.date,
+        impressions: ads_daily.impressions,
+        clicks: ads_daily.clicks,
+        cost: ads_daily.cost,
+        conversions: ads_daily.conversions,
+      })
+      .from(ads_daily)
+      .orderBy(asc(ads_daily.date)),
+    db
+      .select({ top_sources: ads_meta.top_sources, updated_at: ads_meta.updated_at })
+      .from(ads_meta)
+      .where(eq(ads_meta.id, 1))
+      .limit(1),
   ]);
 
-  const daily: AdsDaily[] = (dailyRows ?? []).map((r) => ({
-    date: r.date as string,
+  const daily: AdsDaily[] = dailyRows.map((r) => ({
+    date: r.date,
     impressions: Number(r.impressions) || 0,
     clicks: Number(r.clicks) || 0,
     cost: Number(r.cost) || 0,
     conversions: Number(r.conversions) || 0,
   }));
 
-  const topSources: TopSource[] = Array.isArray(meta?.top_sources)
-    ? (meta!.top_sources as TopSource[])
-    : [];
+  const topSources: TopSource[] = Array.isArray(meta?.top_sources) ? meta.top_sources : [];
 
   return {
     daily,
     topSources,
-    updatedAt: (meta?.updated_at as string) ?? null,
+    updatedAt: meta?.updated_at ?? null,
     summary: computeSummary(daily),
   };
 }
