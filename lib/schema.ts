@@ -88,7 +88,7 @@ export const site_content = pgTable(
     id: uuid().defaultRandom().primaryKey(),
     key: text().notNull(),
     value: text().default("").notNull(),
-    page: text().$type<"home" | "about" | "contact">().notNull(),
+    page: text().$type<"home" | "about" | "wholesale" | "contact">().notNull(),
     section: text().notNull(),
     label: text().notNull(),
     field_type: text()
@@ -104,7 +104,7 @@ export const site_content = pgTable(
       "site_content_field_type_check",
       sql`${t.field_type} = ANY (ARRAY['short_text'::text, 'long_text'::text, 'url'::text, 'image'::text, 'list'::text, 'address_list'::text])`,
     ),
-    check("site_content_page_check", sql`${t.page} = ANY (ARRAY['home'::text, 'about'::text, 'contact'::text])`),
+    check("site_content_page_check", sql`${t.page} = ANY (ARRAY['home'::text, 'about'::text, 'wholesale'::text, 'contact'::text])`),
   ],
 );
 

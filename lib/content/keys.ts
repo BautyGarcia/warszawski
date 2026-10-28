@@ -1,11 +1,12 @@
 import { CATEGORY_META } from "@/lib/category";
+import type { ContentPage } from "@/types/content";
 
 const SHOWROOM_MAPS_URL =
   "https://www.google.com/maps/place/Montevideo+536,+C1019ABL+Cdad.+Aut%C3%B3noma+de+Buenos+Aires/@-34.6025739,-58.389679,16z/data=!3m1!4b1!4m6!3m5!1s0x95bccac1265e5245:0xe109fa22d96fdd68!8m2!3d-34.6025739!4d-58.389679!16s%2Fg%2F11q2x8287_?entry=ttu";
 
 export type ContentField = {
   key: string;
-  page: "home" | "about" | "contact";
+  page: ContentPage;
   section: string;
   label: string;
   fieldType: "short_text" | "long_text" | "url" | "image" | "list" | "address_list";
@@ -19,6 +20,8 @@ export type ContentField = {
   defaultValue: string;
   placeholder?: string;
   hint?: string;
+  /** Si es true, el campo puede quedar vacio (la web oculta ese elemento). */
+  optional?: boolean;
 };
 
 export const SITE_CONTENT_FIELDS: ContentField[] = [
@@ -145,6 +148,7 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     fieldType: "long_text",
     defaultValue: "",
     hint: "Parrafo aparte, un poco mas grande, debajo del texto principal. Dejar vacio para no mostrarlo.",
+    optional: true,
   },
   {
     key: "home.brand.secondary",
@@ -336,6 +340,372 @@ export const SITE_CONTENT_FIELDS: ContentField[] = [
     fieldType: "long_text",
     defaultValue:
       "Escribinos por WhatsApp y charlemos sobre lo que estas buscando. Sin apuro, sin compromiso.",
+  },
+
+
+  // ── WHOLESALE (/mayoristas, landing de Google Ads) / hero ─────────
+  // Esta pagina es el destino de los anuncios de Busqueda. Sus textos
+  // repiten las promesas de los anuncios ("por mayor", "desde 1959",
+  // "envios a todo el pais", "descuentos por volumen") a proposito: Google
+  // puntua la relevancia entre anuncio y pagina, y eso abarata cada clic.
+  {
+    key: "wholesale.hero.label",
+    page: "wholesale",
+    section: "hero",
+    label: "Etiqueta del hero",
+    fieldType: "short_text",
+    defaultValue: "Venta mayorista · Desde 1959 · Buenos Aires",
+  },
+  {
+    key: "wholesale.hero.title",
+    page: "wholesale",
+    section: "hero",
+    label: "Titulo principal (H1)",
+    fieldType: "short_text",
+    defaultValue: "Anteojos y armazones por mayor",
+    hint: "Conviene que diga \"por mayor\" o \"mayorista\": es lo que busca la gente que llega desde Google Ads.",
+  },
+  {
+    key: "wholesale.hero.subtitle",
+    page: "wholesale",
+    section: "hero",
+    label: "Bajada del hero",
+    fieldType: "long_text",
+    defaultValue:
+      "Proveedor de ópticas, distribuidores y revendedores de todo el país. Importación directa, amplio stock y descuentos por volumen.",
+  },
+  {
+    key: "wholesale.hero.cta",
+    page: "wholesale",
+    section: "hero",
+    label: "Texto boton WhatsApp",
+    fieldType: "short_text",
+    defaultValue: "Pedir lista de precios por WhatsApp",
+  },
+  {
+    key: "wholesale.hero.showroomcta",
+    page: "wholesale",
+    section: "hero",
+    label: "Texto boton showroom",
+    fieldType: "short_text",
+    defaultValue: "Visitar showroom en Once",
+    hint: "Lleva a la seccion Showroom de esta misma pagina.",
+  },
+  {
+    key: "wholesale.hero.subcta",
+    page: "wholesale",
+    section: "hero",
+    label: "Texto sub-CTA",
+    fieldType: "short_text",
+    defaultValue: "Venta exclusiva a mayoristas y distribuidores · Respondemos en el día",
+  },
+
+  // ── WHOLESALE / proof (franja de 4 promesas) ─────────────────────
+  {
+    key: "wholesale.proof1.title",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 01 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Desde 1959",
+  },
+  {
+    key: "wholesale.proof1.description",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 01 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Tres generaciones en el rubro óptico.",
+  },
+  {
+    key: "wholesale.proof2.title",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 02 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Envíos al país",
+  },
+  {
+    key: "wholesale.proof2.description",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 02 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Despachamos a todas las provincias.",
+  },
+  {
+    key: "wholesale.proof3.title",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 03 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Por volumen",
+  },
+  {
+    key: "wholesale.proof3.description",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 03 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Descuentos escalonados y financiación.",
+  },
+  {
+    key: "wholesale.proof4.title",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 04 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Garantía",
+  },
+  {
+    key: "wholesale.proof4.description",
+    page: "wholesale",
+    section: "proof",
+    label: "Promesa 04 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Cambio por fallas de fabricación.",
+  },
+
+  // ── WHOLESALE / categories (que vendemos) ────────────────────────
+  {
+    key: "wholesale.categories.label",
+    page: "wholesale",
+    section: "categories",
+    label: "Etiqueta de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Qué vendemos por mayor",
+  },
+  {
+    key: "wholesale.categories.title",
+    page: "wholesale",
+    section: "categories",
+    label: "Titulo de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Sol, receta y modelaje exclusivo",
+  },
+  {
+    key: "wholesale.categories.description",
+    page: "wholesale",
+    section: "categories",
+    label: "Texto de la seccion",
+    fieldType: "long_text",
+    defaultValue:
+      "Reposición constante, enorme variedad de colores en todas las líneas y precios mayoristas desde la primera compra.",
+  },
+  {
+    key: "wholesale.cat1.image",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 01 - Imagen",
+    fieldType: "image",
+    defaultValue: "",
+    hint: "Idealmente cuadrada o 4:3. Sin imagen se muestra un bloque de color.",
+  },
+  {
+    key: "wholesale.cat1.title",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 01 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Anteojos de sol",
+  },
+  {
+    key: "wholesale.cat1.description",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 01 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Polarizados, TR90, metal y acetato. Lo que más rota en vidriera.",
+  },
+  {
+    key: "wholesale.cat2.image",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 02 - Imagen",
+    fieldType: "image",
+    defaultValue: "",
+  },
+  {
+    key: "wholesale.cat2.title",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 02 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Armazones de receta",
+  },
+  {
+    key: "wholesale.cat2.description",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 02 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Armazones para óptica, listos para el taller. Calce y terminaciones cuidadas.",
+  },
+  {
+    key: "wholesale.cat3.image",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 03 - Imagen",
+    fieldType: "image",
+    defaultValue: "",
+  },
+  {
+    key: "wholesale.cat3.title",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 03 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Modelaje exclusivo",
+  },
+  {
+    key: "wholesale.cat3.description",
+    page: "wholesale",
+    section: "categories",
+    label: "Categoria 03 - Descripcion",
+    fieldType: "short_text",
+    defaultValue: "Diseño propio que no vas a encontrar en otro mayorista. Ideal para diferenciarte.",
+  },
+
+  // ── WHOLESALE / steps (como comprar) ─────────────────────────────
+  {
+    key: "wholesale.steps.label",
+    page: "wholesale",
+    section: "steps",
+    label: "Etiqueta de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Cómo comprar",
+  },
+  {
+    key: "wholesale.steps.title",
+    page: "wholesale",
+    section: "steps",
+    label: "Titulo de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Tres pasos, sin vueltas",
+  },
+  {
+    key: "wholesale.steps.description",
+    page: "wholesale",
+    section: "steps",
+    label: "Texto de la seccion",
+    fieldType: "long_text",
+    defaultValue:
+      "Sin mínimos complicados ni registro previo. Escribís, te pasamos precios y armamos el pedido juntos.",
+  },
+  {
+    key: "wholesale.step1.title",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 01 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Escribinos por WhatsApp",
+  },
+  {
+    key: "wholesale.step1.description",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 01 - Descripcion",
+    fieldType: "long_text",
+    defaultValue:
+      "Contanos qué tipo de negocio tenés (óptica, local, reventa) y qué líneas te interesan.",
+  },
+  {
+    key: "wholesale.step2.title",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 02 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Recibís catálogo y lista de precios",
+  },
+  {
+    key: "wholesale.step2.description",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 02 - Descripcion",
+    fieldType: "long_text",
+    defaultValue:
+      "Precios mayoristas, stock actualizado y descuentos según cantidad. Todo por el mismo chat.",
+  },
+  {
+    key: "wholesale.step3.title",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 03 - Titulo",
+    fieldType: "short_text",
+    defaultValue: "Retirás en Once o te lo enviamos",
+  },
+  {
+    key: "wholesale.step3.description",
+    page: "wholesale",
+    section: "steps",
+    label: "Paso 03 - Descripcion",
+    fieldType: "long_text",
+    defaultValue:
+      "Pasás por el showroom a elegir en persona, o despachamos a cualquier punto del país.",
+  },
+
+  // ── WHOLESALE / showroom ─────────────────────────────────────────
+  {
+    key: "wholesale.showroom.image",
+    page: "wholesale",
+    section: "showroom",
+    label: "Imagen del showroom",
+    fieldType: "image",
+    defaultValue: "",
+    hint: "Foto del local o de la exhibicion. Sin imagen se muestra un bloque oscuro.",
+  },
+  {
+    key: "wholesale.showroom.label",
+    page: "wholesale",
+    section: "showroom",
+    label: "Etiqueta de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Showroom en Once",
+  },
+  {
+    key: "wholesale.showroom.title",
+    page: "wholesale",
+    section: "showroom",
+    label: "Titulo de la seccion",
+    fieldType: "short_text",
+    defaultValue: "Vení a ver la colección completa",
+  },
+  {
+    key: "wholesale.showroom.description",
+    page: "wholesale",
+    section: "showroom",
+    label: "Texto de la seccion",
+    fieldType: "long_text",
+    defaultValue:
+      "Mayoristas de anteojos en Once, Capital Federal. Elegí modelos y colores en mano y llevate el pedido en el día.",
+  },
+  {
+    key: "wholesale.showroom.hours",
+    page: "wholesale",
+    section: "showroom",
+    label: "Horario de atencion",
+    fieldType: "short_text",
+    defaultValue: "Lunes a viernes · 9 a 17 h",
+    hint: "Se muestra debajo de cada local. Los locales se cargan en Contacto > Locales.",
+  },
+
+  // ── WHOLESALE / cta ──────────────────────────────────────────────
+  {
+    key: "wholesale.cta.title",
+    page: "wholesale",
+    section: "cta",
+    label: "Titulo CTA final",
+    fieldType: "short_text",
+    defaultValue: "Pedí tu lista de precios mayorista",
+  },
+  {
+    key: "wholesale.cta.description",
+    page: "wholesale",
+    section: "cta",
+    label: "Descripcion CTA final",
+    fieldType: "long_text",
+    defaultValue:
+      "Respondemos en el día. Contanos qué buscás y te pasamos catálogo, precios y disponibilidad.",
   },
 
   // ── CONTACT / whatsapp ───────────────────────────────────

@@ -21,6 +21,9 @@ const SECTION_LABELS: Record<string, string> = {
   whatsapp: "WhatsApp",
   social: "Redes sociales",
   address: "Oficinas",
+  proof: "Promesas (franja)",
+  steps: "Cómo comprar",
+  showroom: "Showroom",
 };
 
 function groupBySection(fields: ContentFieldDef[]) {
@@ -34,6 +37,7 @@ function groupBySection(fields: ContentFieldDef[]) {
 
 const HOME_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "home");
 const ABOUT_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "about");
+const WHOLESALE_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "wholesale");
 const CONTACT_FIELDS = SITE_CONTENT_FIELDS.filter((f) => f.page === "contact");
 
 type Props = {
@@ -118,6 +122,12 @@ export function ContentTabs({ initialValues }: Props) {
             Nosotros
           </TabsTrigger>
           <TabsTrigger
+            value="wholesale"
+            className="rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 text-sm text-[#6B6B6B] data-[state=active]:border-ink data-[state=active]:bg-transparent data-[state=active]:text-ink data-[state=active]:shadow-none"
+          >
+            Mayoristas
+          </TabsTrigger>
+          <TabsTrigger
             value="contact"
             className="rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 text-sm text-[#6B6B6B] data-[state=active]:border-ink data-[state=active]:bg-transparent data-[state=active]:text-ink data-[state=active]:shadow-none"
           >
@@ -139,6 +149,23 @@ export function ContentTabs({ initialValues }: Props) {
 
         <TabsContent value="about" className="flex max-w-[720px] flex-col gap-10">
           {groupBySection(ABOUT_FIELDS).map(([section, fields]) => (
+            <ContentSection
+              key={section}
+              title={SECTION_LABELS[section] ?? section}
+              fields={fields}
+              values={values}
+              onChange={setValue}
+            />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="wholesale" className="flex max-w-[720px] flex-col gap-10">
+          <p className="-mb-4 max-w-[560px] text-[13px] text-[#6B6B6B]">
+            Textos de <span className="font-medium text-ink">/mayoristas</span>, la página a la que
+            llegan los anuncios de Google. Conviene mantener palabras como “por mayor” y
+            “mayorista”: Google las compara con el anuncio y eso abarata cada clic.
+          </p>
+          {groupBySection(WHOLESALE_FIELDS).map(([section, fields]) => (
             <ContentSection
               key={section}
               title={SECTION_LABELS[section] ?? section}

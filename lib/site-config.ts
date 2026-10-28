@@ -11,6 +11,7 @@ export const SITE_CONFIG = {
   nav: {
     public: [
       { label: "Coleccion", href: "/#coleccion" },
+      { label: "Mayoristas", href: "/mayoristas" },
       // TEMP: Editorial temporalmente escondido del nav publico hasta
       // confirmar con el cliente si la seccion se va a usar. Las rutas
       // /editorial y /editorial/[slug] siguen existiendo y funcionando si

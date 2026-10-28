@@ -55,6 +55,26 @@ export function buildAboutMetadata(content: Record<string, string>): Metadata {
   };
 }
 
+export function buildWholesaleMetadata(content: Record<string, string>): Metadata {
+  const title = content["wholesale.hero.title"] || "Anteojos y armazones por mayor";
+  const description =
+    content["wholesale.hero.subtitle"] ||
+    "Mayorista de anteojos de sol y armazones de receta desde 1959. Envíos a todo el país y showroom en Once.";
+  return {
+    // Titulo absoluto: el H1 de la landing, que es lo que busca quien llega
+    // desde Google Ads ("anteojos por mayor"), no la marca.
+    title: { absolute: `${title} — Warszawski` },
+    description,
+    alternates: { canonical: `${SITE_URL}/mayoristas` },
+    openGraph: {
+      url: `${SITE_URL}/mayoristas`,
+      title: `${title} — Warszawski`,
+      description,
+      type: "website",
+    },
+  };
+}
+
 export function buildProductMetadata(p: Product): Metadata {
   const url = `${SITE_URL}/productos/${p.slug}`;
   const title = p.seo_title || `${p.name}`;

@@ -6,9 +6,18 @@ import type { ContentMap } from "@/types/content";
 export async function FinalCTA({
   content,
   contentKey = "home",
+  ctaLabel = "Escribinos por WhatsApp",
+  source = "cta_final",
+  message = "Hola, quiero consultar por la venta mayorista",
 }: {
   content: ContentMap;
-  contentKey?: "home" | "about";
+  contentKey?: "home" | "about" | "wholesale";
+  /** Texto del boton. */
+  ctaLabel?: string;
+  /** Origen del CTA para atribuir la conversion. */
+  source?: string;
+  /** Mensaje precargado en WhatsApp. */
+  message?: string;
 }) {
   const { whatsappNumber } = await getContactInfo();
   const titleKey = `${contentKey}.cta.title` as const;
@@ -29,10 +38,10 @@ export async function FinalCTA({
               number={whatsappNumber}
               size="lg"
               className="mt-8 md:mt-12"
-              message="Hola, quiero consultar por la venta mayorista"
-              source="cta_final"
+              message={message}
+              source={source}
             >
-              Escribinos por WhatsApp
+              {ctaLabel}
             </WhatsAppButton>
           ) : null}
         </div>
