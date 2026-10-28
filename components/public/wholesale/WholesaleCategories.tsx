@@ -39,7 +39,9 @@ export function WholesaleCategories({ content }: { content: ContentMap }) {
             <div
               className={cn(
                 "relative flex size-[120px] shrink-0 items-center justify-center overflow-hidden md:aspect-[410/360] md:size-auto md:w-full",
-                i === 1 ? "bg-ink" : "bg-bg-warm",
+                // Las fotos de producto vienen en 3:2 sobre fondo blanco: se muestran
+                // enteras (contain) sobre blanco para que no se recorten las patillas.
+                item.image ? "bg-white" : i === 1 ? "bg-ink" : "bg-bg-warm",
               )}
             >
               {item.image ? (
@@ -48,7 +50,7 @@ export function WholesaleCategories({ content }: { content: ContentMap }) {
                   alt={item.title}
                   fill
                   sizes="(min-width: 768px) 33vw, 120px"
-                  className="object-cover"
+                  className="object-contain p-2 md:p-6"
                 />
               ) : (
                 <span
